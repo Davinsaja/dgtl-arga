@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Poppins", system-ui, sans-serif;
+  --color-primary: #0D5C53;      /* Deep Islamic Emerald Green */
+  --color-secondary: #D4AF37;    /* Premium Champagne Gold */
+  --color-ivory: #FAFAF7;        /* Elegant Ivory White */
+  --color-cream: #F5F1E8;        /* Soft Cream */
+}
+
+/* Base style smooth scroll and custom scrollbar */
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: var(--color-ivory);
+  color: #2F4F4F;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  min-height: 100dvh;
+  width: 100%;
+}
+
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Undangan shell: centered column on tablet/desktop, full width on mobile */
+.invitation-shell {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+  .invitation-shell {
+    max-width: 540px;
+    box-shadow: 0 0 60px rgba(13, 92, 83, 0.08);
+  }
+}
+
+@media (min-width: 768px) {
+  .invitation-shell {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .invitation-shell {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .invitation-shell {
+    max-width: 768px;
+  }
+}
+
+/* Safe area for notched phones (iPhone X+, Android gesture nav) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Prevent images/media from causing horizontal overflow */
+img,
+video,
+iframe,
+svg {
+  max-width: 100%;
+}
+
+/* Responsive section spacing */
+.section-padding {
+  padding-block: clamp(3rem, 8vw, 5rem);
+  padding-inline: clamp(1rem, 4vw, 1.5rem);
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F1E8;
+}
+::-webkit-scrollbar-thumb {
+  background: #0D5C53;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #09403A;
+}
+
+/* Ornate Islamic Geometric Arabesque Background Pattern - Beautiful curved floral arabesque and circular mandala pattern */
+.bg-islamic-pattern {
+  background-color: #F6F1E6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' stroke='%23D4AF37' stroke-width='0.5' stroke-opacity='0.15'%3E%3Ccircle cx='30' cy='30' r='25' /%3E%3Ccircle cx='30' cy='30' r='15' /%3E%3Ccircle cx='30' cy='30' r='5' /%3E%3Ccircle cx='0' cy='0' r='25' /%3E%3Ccircle cx='60' cy='0' r='25' /%3E%3Ccircle cx='0' cy='60' r='25' /%3E%3Ccircle cx='60' cy='60' r='25' /%3E%3Ccircle cx='30' cy='0' r='15' /%3E%3Ccircle cx='30' cy='60' r='15' /%3E%3Ccircle cx='0' cy='30' r='15' /%3E%3Ccircle cx='60' cy='30' r='15' /%3E%3C/g%3E%3Cg fill='none' stroke='%230D5C53' stroke-width='0.4' stroke-opacity='0.08'%3E%3Cpath d='M30 5 Q35 15 30 25 Q25 15 30 5' /%3E%3Cpath d='M30 55 Q35 45 30 35 Q25 45 30 55' /%3E%3Cpath d='M5 30 Q15 35 25 30 Q15 25 5 30' /%3E%3Cpath d='M55 30 Q45 35 35 30 Q45 25 55 30' /%3E%3Cpath d='M12.3 12.3 Q22.9 19.3 22.9 22.9 Q19.3 22.9 12.3 12.3' /%3E%3Cpath d='M47.7 47.7 Q37.1 40.7 37.1 37.1 Q40.7 37.1 47.7 47.7' /%3E%3Cpath d='M12.3 47.7 Q22.9 40.7 22.9 37.1 Q19.3 37.1 12.3 47.7' /%3E%3Cpath d='M47.7 12.3 Q37.1 19.3 37.1 22.9 Q40.7 22.9 47.7 12.3' /%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Subtle book/card shadow matching the emerald theme */
+.shadow-book {
+  box-shadow: 0 10px 30px -5px rgba(13, 92, 83, 0.12), 0 5px 15px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Optimized floating animation using hardware acceleration */
+@keyframes float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+.animate-floating {
+  will-change: transform;
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-floating-slow {
+  will-change: transform;
+  animation: float 10s ease-in-out infinite;
+}
+
+/* Disable heavy continuous decorative animations on mobile devices for peak performance */
+@media (max-width: 767px) {
+  .animate-floating,
+  .animate-floating-slow {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Golden glitter or text reflection */
+.gold-text-gradient {
+  background: linear-gradient(135deg, #B38728 0%, #FBF5B7 25%, #DAA520 50%, #FBF5B7 75%, #AA771C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #B38728 0%, #FCF6BA 50%, #AA771C 100%);
+}
+
+.gold-border {
+  border-image: linear-gradient(135deg, #B38728 0%, #FCF6BA 25%, #B38728 50%, #FCF6BA 75%, #AA771C 100%) 1;
+}
+
+/* Modern music equalizer animation for audio FAB */
+@keyframes eq-bounce {
+  0%, 100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.audio-eq-bar {
+  transform-origin: center bottom;
+  animation: eq-bounce 0.85s ease-in-out infinite;
+}
+
+.audio-eq-bar-1 { animation-delay: 0s; }
+.audio-eq-bar-2 { animation-delay: 0.15s; }
+.audio-eq-bar-3 { animation-delay: 0.3s; }
+.audio-eq-bar-4 { animation-delay: 0.45s; }
+
+@keyframes audio-glow {
+  0%, 100% {
+    box-shadow:
+      0 8px 24px -4px rgba(13, 92, 83, 0.35),
+      0 0 0 0 rgba(212, 175, 55, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 8px 28px -2px rgba(13, 92, 83, 0.45),
+      0 0 0 6px rgba(212, 175, 55, 0.12);
+  }
+}
+
+.audio-fab-playing {
+  animation: audio-glow 2s ease-in-out infinite;
+}
+

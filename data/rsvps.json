@@ -1,0 +1,45 @@
+[
+  {
+    "id": "1",
+    "name": "Ust. Abdullah Mansur",
+    "presence": "hadir",
+    "wish": "Selamat ya nanda Arga atas khitannya. Semoga setelah khitan ini tumbuh menjadi anak yang sholeh, rajin beribadah, taat kepada Allah SWT, serta berbakti kepada kedua orang tua. Aamiin ya Rabbal Alamin.",
+    "createdAt": "2026-07-23T06:30:25.037Z",
+    "likes": 0,
+    "replies": []
+  },
+  {
+    "id": "2",
+    "name": "Tante Ria & Om Fajar",
+    "presence": "hadir",
+    "wish": "Alhamdulillah, selamat berkhitan ya Arga kasep! Semoga lekas sembuh, tambah pintar sekolahnya, dan menjadi kebanggaan keluarga ayah dan ibu ya.",
+    "createdAt": "2026-07-22T21:30:25.040Z",
+    "likes": 2,
+    "replies": [
+      {
+        "id": "r1",
+        "name": "Ibu Arga",
+        "text": "Aamiin ya rabbal alamin.. Terimakasih tante Ria & om Fajar doa baiknya.",
+        "createdAt": "2026-07-22T23:30:25.040Z"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Pakde Budi & Keluarga",
+    "presence": "hadir",
+    "wish": "Selamat ya dek Arga, semoga dilancarkan rangkaian acaranya dari hari pertama sampai selesai. Semoga kelak Arga menjadi pemuda muslim yang tangguh dan cerdas.",
+    "createdAt": "2026-07-22T09:30:25.040Z",
+    "likes": 1,
+    "replies": []
+  },
+  {
+    "id": "4",
+    "name": "Beni & Heru (Teman Sekelas Arga)",
+    "presence": "hadir",
+    "wish": "Selamat khitan Arga! Semoga cepet sembuh biar kita bisa main bola lagi bareng di sekolah. Selamat liburan juga ya Ar!",
+    "createdAt": "2026-07-21T09:30:25.040Z",
+    "likes": 0,
+    "replies": []
+  }
+]
