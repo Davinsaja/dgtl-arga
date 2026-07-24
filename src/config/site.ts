@@ -114,8 +114,8 @@ export const siteConfig: SiteConfig = {
   ],
   music: {
     // Direct streaming URL for soft Islamic Instrumental Oud & Flute
-    url: "public/music/lagu.mp3",
-    fallbackUrl: "public/music/lagu.mp3",
+    url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/lagu.mp3",
+    fallbackUrl: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/lagu.mp3",
     title: "ini musikyaa"
   },
   gallery: {
