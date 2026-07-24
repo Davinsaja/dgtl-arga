@@ -1,6 +1,7 @@
 import { useState, useEffect, useId } from 'react';
 import { motion } from 'motion/react';
 import { siteConfig } from '../config/site';
+import { CornerFiligree } from './PremiumOrnaments';
 
 interface CoverProps {
   onOpen: () => void;
@@ -21,7 +22,7 @@ function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' })
   return (
     <svg
       viewBox="0 0 90 90"
-      className={`absolute w-[88px] h-[88px] sm:w-[100px] sm:h-[100px] pointer-events-none select-none ${posClass}`}
+      className={`absolute w-[72px] h-[72px] sm:w-[90px] sm:h-[90px] pointer-events-none select-none ${posClass}`}
       aria-hidden="true"
     >
       <defs>
@@ -74,38 +75,54 @@ function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' })
 /** Gerbang masjid — header hijau + lengkung mihrab */
 function MosqueGateHeader() {
   return (
-    <div className="relative w-full shrink-0 h-[168px] sm:h-[188px]">
+    <div className="relative w-full shrink-0 h-[120px] xs:h-[135px] sm:h-[155px]">
       {/* Background hijau + garis pinstripe */}
-      <div className="absolute inset-0 bg-[#0D5C53] overflow-hidden">
-        {[6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90].map((y) => (
+      <div className="absolute inset-0 bg-[#0D5C53] overflow-hidden flex flex-col items-center pt-2">
+        {[10, 25, 40, 55, 70, 85].map((y) => (
           <div
             key={y}
-            className="absolute left-0 right-0 h-px bg-white/[0.09]"
+            className="absolute left-0 right-0 h-px bg-white/[0.08]"
             style={{ top: `${y}%` }}
           />
         ))}
+
+        {/* Lentera Emas Kecil */}
+        <div className="relative z-10 text-[#D4AF37] opacity-90 drop-shadow">
+          <svg viewBox="0 0 24 32" className="w-5 h-6 sm:w-6 sm:h-7" fill="currentColor">
+            <path d="M12 0 L12 4 M8 4 L16 4 L14 8 L10 8 Z" stroke="currentColor" strokeWidth="1" />
+            <path d="M7 8 L17 8 L19 20 L5 20 Z" fill="#FBF5B7" fillOpacity="0.85" stroke="currentColor" strokeWidth="1.2" />
+            <circle cx="12" cy="14" r="2.5" fill="#D4AF37" />
+            <path d="M5 20 L19 20 L16 26 L8 26 Z" />
+            <circle cx="12" cy="28" r="1.5" />
+          </svg>
+        </div>
+
+        {/* Teks Undangan di dalam header hijau agar kontras tinggi & tidak tertimpa lengkungan */}
+        <p className="relative z-10 font-serif italic text-xl sm:text-2xl text-[#FCF6BA] drop-shadow-md leading-none mt-1 tracking-wide">
+          {siteConfig.cover.label}
+        </p>
       </div>
 
       {/* Ornamen sudut atas */}
       <CornerCircleOrnament corner="tl" />
       <CornerCircleOrnament corner="tr" />
 
-      {/* Lengkung mihrab — badan krem naik ke header */}
+      {/* Lengkung mihrab — badan krem hangat naik ke header */}
       <svg
-        viewBox="0 0 400 100"
+        viewBox="0 0 400 90"
         preserveAspectRatio="none"
-        className="absolute bottom-0 left-0 w-full h-[72px] sm:h-[80px] text-[#FAFAF7]"
+        className="absolute bottom-0 left-0 w-full h-[55px] sm:h-[65px] text-[#F6F0E2]"
         aria-hidden="true"
       >
-        <path d="M0,100 L400,100 L400,28 C340,28 310,96 200,96 C90,96 60,28 0,28 Z" fill="currentColor" />
+        <path d="M0,90 L400,90 L400,24 C340,24 310,86 200,86 C90,86 60,24 0,24 Z" fill="currentColor" />
         <path
-          d="M0,28 C60,28 90,96 200,96 C310,96 340,28 400,28"
+          d="M0,24 C60,24 90,86 200,86 C310,86 340,24 400,24"
           fill="none"
           stroke="#D4AF37"
           strokeWidth="2.2"
         />
         <path
-          d="M0,26 C60,26 90,94 200,94 C310,94 340,26 400,26"
+          d="M0,22 C60,22 90,84 200,84 C310,84 340,22 400,22"
           fill="none"
           stroke="#FBF5B7"
           strokeWidth="0.6"
@@ -114,20 +131,9 @@ function MosqueGateHeader() {
       </svg>
 
       {/* Bintang emas di puncak lengkung */}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-[58px] sm:bottom-[64px] z-20">
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-[42px] sm:bottom-[50px] z-20">
         <svg viewBox="0 0 24 24" className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#D4AF37] fill-current drop-shadow-md">
           <path d="M12 2 L14.2 9.2 L22 12 L14.2 14.8 L12 22 L9.8 14.8 L2 12 L9.8 9.2 Z" />
-        </svg>
-      </div>
-
-      {/* Siluet kubah masjid kecil di atas lengkung */}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-[68px] sm:bottom-[76px] z-10 opacity-90">
-        <svg viewBox="0 0 60 48" className="w-9 h-7 sm:w-10 sm:h-8 text-[#D4AF37]" fill="currentColor" aria-hidden="true">
-          <path d="M30 4 C30 4 14 18 18 36 L42 36 C46 18 30 4 30 4 Z" opacity="0.85" />
-          <rect x="16" y="36" width="28" height="10" rx="1" />
-          <path d="M30 36 L30 46" stroke="#0D5C53" strokeWidth="2.5" />
-          <path d="M30 4 L30 0" stroke="currentColor" strokeWidth="1.2" />
-          <path d="M30 0 A 3.5 3.5 0 1 0 33 5.5 A 4.5 4.5 0 1 1 30 0 Z" />
         </svg>
       </div>
     </div>
@@ -136,7 +142,7 @@ function MosqueGateHeader() {
 
 function BottomStarRow() {
   return (
-    <div className="flex items-center justify-center gap-[7px] sm:gap-2 py-2.5">
+    <div className="flex items-center justify-center gap-1.5 sm:gap-2 py-2">
       {Array.from({ length: 9 }).map((_, i) => (
         <svg
           key={i}
@@ -177,80 +183,95 @@ export default function Cover({ onOpen }: CoverProps) {
   return (
     <div
       id="envelope-cover"
-      className="relative flex h-[100dvh] min-h-[100dvh] w-full items-center justify-center bg-[#E8E4DA] safe-top safe-bottom overflow-hidden"
+      className="relative flex h-[100dvh] min-h-[100dvh] w-full items-center justify-center bg-[#E3DAC9] safe-top safe-bottom overflow-hidden p-0 sm:p-4"
     >
-      {/* Kartu undangan — proporsi portrait seperti referensi */}
-      <div className="relative flex flex-col w-full max-w-[400px] h-full max-h-[100dvh] sm:max-h-[860px] sm:h-[92dvh] sm:rounded-2xl sm:shadow-[0_20px_60px_rgba(13,92,83,0.18)] overflow-hidden bg-[#FAFAF7]">
+      {/* Kartu undangan — Tekstur kertas krem hangat premium (tidak putih polos) */}
+      <div className="relative flex flex-col w-full max-w-[420px] h-full max-h-[100dvh] sm:max-h-[820px] sm:h-[94dvh] sm:rounded-3xl sm:shadow-[0_20px_60px_rgba(13,92,83,0.25)] overflow-hidden bg-[#F6F0E2] justify-between shadow-[inset_0_0_35px_rgba(212,175,55,0.18)] border border-[#D4AF37]/30">
 
-        {/* Pattern halus */}
-        <div className="absolute inset-0 bg-islamic-pattern opacity-40 pointer-events-none" />
+        {/* Outer Gold Foil Double Line Frame inside Card */}
+        <div className="absolute inset-2 sm:inset-3 rounded-2xl border border-[#D4AF37]/35 pointer-events-none z-10" />
 
-        {/* Gerbang masjid */}
+        {/* Pattern Arabesque Islami Halus */}
+        <div className="absolute inset-0 bg-islamic-pattern opacity-50 pointer-events-none" />
+
+        {/* Ornamen Ukiran Sudut Emas Klasik (Corner Filigree) */}
+        <CornerFiligree className="absolute top-28 left-2 w-12 h-12 opacity-70 z-10" />
+        <CornerFiligree className="absolute top-28 right-2 w-12 h-12 opacity-70 z-10" flip="x" />
+        <CornerFiligree className="absolute bottom-16 left-2 w-12 h-12 opacity-70 z-10" flip="y" />
+        <CornerFiligree className="absolute bottom-16 right-2 w-12 h-12 opacity-70 z-10" flip="both" />
+
+        {/* Gerbang masjid header */}
         <MosqueGateHeader />
 
-        {/* Konten utama — spacing rapat seperti referensi */}
-        <div className="relative z-10 flex flex-1 flex-col items-center text-center px-6 pt-3 pb-2 overflow-y-auto overscroll-contain">
-          {/* Judul */}
-          <div className="mb-3 sm:mb-4 flex flex-col items-center gap-0.5">
-            <p className="font-serif italic text-[1.65rem] sm:text-[1.85rem] text-[#0D5C53] leading-none">
-              {siteConfig.cover.label}
-            </p>
-            <h1 className="font-sans font-extrabold text-[0.8rem] sm:text-sm tracking-[0.24em] text-[#D4AF37] uppercase">
-              {siteConfig.cover.title}
-            </h1>
+        {/* Konten utama — disetting flex-1 & justify-evenly agar pas sempurna tanpa scroll di layar hp apapun */}
+        <div className="relative z-20 flex flex-1 flex-col items-center justify-evenly text-center px-4 py-1 overflow-hidden">
+          
+          {/* Subtitle TASYAKURAN KHITAN */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[#D4AF37] text-xs">❖</span>
+              <h1 className="font-sans font-black text-xs sm:text-sm tracking-[0.24em] text-[#0D5C53] uppercase">
+                {siteConfig.cover.title}
+              </h1>
+              <span className="text-[#D4AF37] text-xs">❖</span>
+            </div>
+            <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
           </div>
 
-          {/* Foto bulat */}
-          <div className="relative mb-3 sm:mb-4">
-            <div className="rounded-full bg-gradient-to-br from-[#D4AF37] via-[#FCF6BA] to-[#AA771C] p-[2.5px] shadow-[0_6px_22px_rgba(212,175,55,0.32)]">
-              <div className="w-[130px] h-[130px] sm:w-[148px] sm:h-[148px] rounded-full overflow-hidden bg-[#0D5C53]">
+          {/* Foto bulat dengan ring emas ganda & glow hangat */}
+          <div className="relative my-1 shrink-0">
+            <div className="rounded-full bg-gradient-to-br from-[#D4AF37] via-[#FCF6BA] to-[#AA771C] p-[3.5px] shadow-[0_8px_25px_rgba(212,175,55,0.38)]">
+              <div className="w-[115px] h-[115px] xs:w-[130px] xs:h-[130px] sm:w-[145px] sm:h-[145px] rounded-full overflow-hidden bg-[#0D5C53] border-2 border-[#FAF5EA]">
                 <img
                   src={siteConfig.cover.photo}
                   alt={siteConfig.child.fullName}
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top brightness-[1.02]"
                   referrerPolicy="no-referrer"
                 />
               </div>
             </div>
           </div>
 
-          {/* Nama */}
-          <h2 className="font-serif text-[1.2rem] sm:text-[1.35rem] font-bold text-[#0D5C53] mb-4 sm:mb-5 leading-snug px-1">
+          {/* Nama Anak */}
+          <h2 className="font-serif text-xl xs:text-2xl sm:text-3xl font-black text-[#0D5C53] drop-shadow-sm leading-tight px-1">
             {siteConfig.child.fullName}
           </h2>
 
-          {/* Tamu */}
-          <div className="flex flex-col items-center gap-1 mb-5 sm:mb-6">
-            <p className="font-serif text-[0.8rem] sm:text-sm text-[#0D5C53]/75 italic">Kepada Yth;</p>
-            <p className="font-serif text-base sm:text-lg font-bold text-[#D4AF37] leading-snug break-words max-w-[260px]">
+          {/* Plakat Tamu / Kepada Yth (Tampilan Kertas Emas Mewah) */}
+          <div className="flex flex-col items-center gap-1 w-full max-w-[290px] py-2 px-4 rounded-xl bg-[#FAF5EA] border-2 border-[#D4AF37]/50 shadow-[0_4px_14px_rgba(212,175,55,0.16)] relative">
+            <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-[#0D5C53] text-[#D4AF37] text-[9px] font-bold px-2 py-0.5 rounded-full border border-[#D4AF37]">
+              YTH
+            </div>
+            <p className="font-serif text-xs sm:text-sm text-[#0D5C53]/80 italic mt-0.5">Kepada Yth;</p>
+            <p className="font-serif text-sm xs:text-base sm:text-lg font-black text-[#AA771C] leading-snug break-words">
               {guestName}
             </p>
           </div>
 
-          {/* Tombol */}
+          {/* Tombol Buka Undangan — Hijau Emerald & Emas Mewah */}
           <motion.button
             id="btn-open-envelope"
             onClick={onOpen}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="px-9 sm:px-10 py-2.5 sm:py-3 gold-gradient-bg hover:brightness-105 text-white font-serif font-bold text-[0.82rem] sm:text-sm rounded-full shadow-[0_5px_20px_rgba(212,175,55,0.4)] border border-white/20 cursor-pointer tracking-wide"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="px-9 sm:px-11 py-2.5 sm:py-3 bg-gradient-to-r from-[#0D5C53] via-[#09403A] to-[#0D5C53] border-2 border-[#D4AF37] text-[#FCF6BA] font-serif font-black text-xs sm:text-sm rounded-full shadow-[0_8px_25px_rgba(13,92,83,0.4)] hover:shadow-[0_10px_30px_rgba(212,175,55,0.45)] cursor-pointer tracking-wider uppercase transition-all duration-200"
           >
             {siteConfig.cover.buttonText}
           </motion.button>
 
-          {/* Spacer agar footer menempel bawah */}
-          <div className="flex-1 min-h-2" />
         </div>
 
         {/* Footer — ornamen sudut bawah + bintang */}
-        <div className="relative shrink-0 h-[72px] sm:h-[80px]">
+        <div className="relative shrink-0 h-[55px] sm:h-[65px]">
           <CornerCircleOrnament corner="bl" />
           <CornerCircleOrnament corner="br" />
           <div className="absolute inset-x-0 bottom-0 safe-bottom">
             <BottomStarRow />
           </div>
         </div>
+
       </div>
     </div>
   );
 }
+

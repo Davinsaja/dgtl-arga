@@ -65,6 +65,37 @@ export default function AudioPlayer({ isPlaying, setIsPlaying }: AudioPlayerProp
     }
   }, [isPlaying, currentSrc, setIsPlaying]);
 
+  // Pause audio when page/tab is hidden and optionally resume when it becomes visible again
+  const playingBeforeHideRef = React.useRef(false);
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        // Remember whether we were playing before the tab got hidden
+        playingBeforeHideRef.current = isPlaying;
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      } else {
+        // Tab became visible again
+        if (playingBeforeHideRef.current) {
+          // Restore original source (in case it switched to fallback) and resume playback
+          setCurrentSrc(siteConfig.music.url);
+          setIsPlaying(true);
+        }
+      }
+    };
+    const handlePageHide = () => {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('pagehide', handlePageHide);
+    window.addEventListener('beforeunload', handlePageHide);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('pagehide', handlePageHide);
+      window.removeEventListener('beforeunload', handlePageHide);
+    };
+  }, [isPlaying]);
   const handleAudioError = () => {
     console.warn("Audio source failed to load:", currentSrc);
     if (currentSrc !== siteConfig.music.fallbackUrl && siteConfig.music.fallbackUrl) {
@@ -75,12 +106,24 @@ export default function AudioPlayer({ isPlaying, setIsPlaying }: AudioPlayerProp
     }
   };
 
+  // Initialize auto‑play based on user's previous pause action
+  useEffect(() => {
+    const pausedByUser = localStorage.getItem('audioUserPaused') === 'true';
+    if (!pausedByUser) {
+      // If the user hasn't manually paused before, start playing automatically
+      setIsPlaying(true);
+    }
+  }, []);
+
   const togglePlay = () => {
     if (hasError) {
       setHasError(false);
       setCurrentSrc(siteConfig.music.url);
     }
-    setIsPlaying(!isPlaying);
+    const newPlaying = !isPlaying;
+    setIsPlaying(newPlaying);
+    // Remember the user's explicit pause/play choice
+    localStorage.setItem('audioUserPaused', (!newPlaying).toString());
   };
 
   return (
