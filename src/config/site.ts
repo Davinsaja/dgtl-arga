@@ -49,6 +49,7 @@ export interface SiteConfig {
   gifts: GiftAccount[];
   music: {
     url: string;
+    fallbackUrl: string;
     title: string;
   };
   gallery: {
@@ -113,9 +114,9 @@ export const siteConfig: SiteConfig = {
   ],
   music: {
     // Direct streaming URL for soft Islamic Instrumental Oud & Flute
-    url: "public/music/oud-seruling-islami.mp3",
-    fallbackUrl: "public/music/oud-seruling-islami.mp3",
-    title: "Instrumen Oud & Seruling Islami - Keindahan Syurga"
+    url: "public/music/lagu.mp3",
+    fallbackUrl: "public/music/lagu.mp3",
+    title: "ini musikyaa"
   },
   gallery: {
     // Array of mock elegant pictures. Since images are in public/gallery, we will serve highly stunning Unsplash photos of Islamic motifs, happy families, and children to ensure a premium look.
