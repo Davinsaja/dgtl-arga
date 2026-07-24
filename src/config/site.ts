@@ -114,7 +114,7 @@ export const siteConfig: SiteConfig = {
   music: {
     // Direct streaming URL for soft Islamic Instrumental Oud & Flute
     url: "public/music/oud-seruling-islami.mp3",
-    fallbackUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    fallbackUrl: "public/music/oud-seruling-islami.mp3",
     title: "Instrumen Oud & Seruling Islami - Keindahan Syurga"
   },
   gallery: {
