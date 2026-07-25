@@ -21,6 +21,7 @@ export interface SiteConfig {
     grade: string;
     fatherName: string;
     motherName: string;
+    photo: string;
   };
   event: {
     days: string[];
@@ -76,7 +77,8 @@ export const siteConfig: SiteConfig = {
     nickName: "Arga",
     grade: "Kelas 5 SD",
     fatherName: "Sarif Imron Wakhidin",
-    motherName: "Riawati"
+    motherName: "Riawati",
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/profilgan.jpeg"
   },
   event: {
     days: ["Rabu", "Kamis", "Jumat"],
@@ -114,9 +116,9 @@ export const siteConfig: SiteConfig = {
   ],
   music: {
     // Direct streaming URL for soft Islamic Instrumental Oud & Flute
-    url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/lagu.mp3",
-    fallbackUrl: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/lagu.mp3",
-    title: "ini musikyaa"
+    url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/djovan-medina-lights-soft-oud-amp-kanun-489145%20(1).mp3",
+    fallbackUrl: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/djovan-medina-lights-soft-oud-amp-kanun-489145%20(1).mp3",
+    title: "Medina Lights - Soft Oud & Kanun"
   },
   gallery: {
     // Array of mock elegant pictures. Since images are in public/gallery, we will serve highly stunning Unsplash photos of Islamic motifs, happy families, and children to ensure a premium look.
@@ -133,7 +135,7 @@ export const siteConfig: SiteConfig = {
     label: "Undangan",
     title: "TASYAKURAN KHITAN",
     buttonText: "Buka Undangan",
-    photo: "/img/dpn111.png",
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/editprofile.jpeg",
   },
   theme: {
     primary: "#0F766E",      // Emerald

@@ -22,7 +22,7 @@ function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' })
   return (
     <svg
       viewBox="0 0 90 90"
-      className={`absolute w-[72px] h-[72px] sm:w-[90px] sm:h-[90px] pointer-events-none select-none ${posClass}`}
+      className={`absolute w-[72px] h-[72px] sm:w-[75px] sm:h-[75px] pointer-events-none select-none ${posClass}`}
       aria-hidden="true"
     >
       <defs>
@@ -75,7 +75,7 @@ function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' })
 /** Gerbang masjid — header hijau + lengkung mihrab */
 function MosqueGateHeader() {
   return (
-    <div className="relative w-full shrink-0 h-[120px] xs:h-[135px] sm:h-[155px]">
+    <div className="relative w-full shrink-0 h-[120px] xs:h-[135px] sm:h-[125px]">
       {/* Background hijau + garis pinstripe */}
       <div className="absolute inset-0 bg-[#0D5C53] overflow-hidden flex flex-col items-center pt-2">
         {[10, 25, 40, 55, 70, 85].map((y) => (
@@ -111,7 +111,7 @@ function MosqueGateHeader() {
       <svg
         viewBox="0 0 400 90"
         preserveAspectRatio="none"
-        className="absolute bottom-0 left-0 w-full h-[55px] sm:h-[65px] text-[#F6F0E2]"
+        className="absolute bottom-0 left-0 w-full h-[55px] sm:h-[50px] text-[#F6F0E2]"
         aria-hidden="true"
       >
         <path d="M0,90 L400,90 L400,24 C340,24 310,86 200,86 C90,86 60,24 0,24 Z" fill="currentColor" />
@@ -131,8 +131,8 @@ function MosqueGateHeader() {
       </svg>
 
       {/* Bintang emas di puncak lengkung */}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-[42px] sm:bottom-[50px] z-20">
-        <svg viewBox="0 0 24 24" className="w-4 h-4 sm:w-[18px] sm:h-[18px] text-[#D4AF37] fill-current drop-shadow-md">
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-[42px] sm:bottom-[40px] z-20">
+        <svg viewBox="0 0 24 24" className="w-4 h-4 sm:w-[20px] sm:h-[20px] text-[#D4AF37] fill-current drop-shadow-md">
           <path d="M12 2 L14.2 9.2 L22 12 L14.2 14.8 L12 22 L9.8 14.8 L2 12 L9.8 9.2 Z" />
         </svg>
       </div>
@@ -218,32 +218,47 @@ export default function Cover({ onOpen }: CoverProps) {
             <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
           </div>
 
-          {/* Foto bulat dengan ring emas ganda & glow hangat */}
-          <div className="relative my-1 shrink-0">
-            <div className="rounded-full bg-gradient-to-br from-[#D4AF37] via-[#FCF6BA] to-[#AA771C] p-[3.5px] shadow-[0_8px_25px_rgba(212,175,55,0.38)]">
-              <div className="w-[115px] h-[115px] xs:w-[130px] xs:h-[130px] sm:w-[145px] sm:h-[145px] rounded-full overflow-hidden bg-[#0D5C53] border-2 border-[#FAF5EA]">
-                <img
-                  src={siteConfig.cover.photo}
-                  alt={siteConfig.child.fullName}
-                  className="w-full h-full object-cover object-top brightness-[1.02]"
-                  referrerPolicy="no-referrer"
-                />
+          {/* Frame Foto Mewah Islami — Ukuran Lebih Besar & Bingkai Emas Berlapis */}
+          <div className="relative my-2 xs:my-3 shrink-0 flex items-center justify-center">
+            {/* Outer Golden Glow & Halo Ornament */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#D4AF37]/30 via-[#FBF5B7]/40 to-[#AA771C]/20 blur-md scale-110 animate-pulse pointer-events-none" />
+
+            {/* Rotating Decorative Outer Gold Ring / Starburst dots */}
+            <div className="absolute -inset-3.5 sm:-inset-4 rounded-full border border-dashed border-[#D4AF37]/60 pointer-events-none animate-[spin_40s_linear_infinite]" />
+
+            {/* Outer Metallic Gold Border Frame */}
+            <div className="relative rounded-full p-[4.5px] bg-gradient-to-b from-[#FBF5B7] via-[#D4AF37] to-[#8C6D23] shadow-[0_12px_35px_rgba(212,175,55,0.45),0_4px_15px_rgba(13,92,83,0.35)]">
+              {/* Middle Emerald Inset */}
+              <div className="rounded-full p-[3px] bg-[#0D5C53]">
+                {/* Inner Ivory Frame Ring */}
+                <div className="w-[160px] h-[160px] xs:w-[185px] xs:h-[185px] sm:w-[170px] sm:h-[170px] rounded-full overflow-hidden bg-[#FAF5EA] border-2 border-[#FAF5EA] relative shadow-inner">
+                  <img
+                    src={siteConfig.cover.photo}
+                    alt={siteConfig.child.fullName}
+                    className="w-full h-full object-cover object-top brightness-[1.03] contrast-[1.02] transition-transform duration-500 hover:scale-105"
+                    referrerPolicy="no-referrer"
+                  />
+                  {/* Subtle Inner Ring Highlight */}
+                  <div className="absolute inset-0 rounded-full border border-[#D4AF37]/40 pointer-events-none" />
+                </div>
               </div>
+            </div>
+
+            {/* Top Gold Crescent Emblem Ornament */}
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#0D5C53] border-2 border-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-md z-30 flex items-center justify-center gap-1 text-[#FCF6BA]">
+              <span className="text-[#D4AF37] text-xs font-bold">☪</span>
             </div>
           </div>
 
           {/* Nama Anak */}
-          <h2 className="font-serif text-xl xs:text-2xl sm:text-3xl font-black text-[#0D5C53] drop-shadow-sm leading-tight px-1">
+          <h2 className="font-serif text-xl xs:text-2xl sm:text-2xl font-black text-[#0D5C53] drop-shadow-sm leading-tight px-1">
             {siteConfig.child.fullName}
           </h2>
 
           {/* Plakat Tamu / Kepada Yth (Tampilan Kertas Emas Mewah) */}
-          <div className="flex flex-col items-center gap-1 w-full max-w-[290px] py-2 px-4 rounded-xl bg-[#FAF5EA] border-2 border-[#D4AF37]/50 shadow-[0_4px_14px_rgba(212,175,55,0.16)] relative">
-            <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-[#0D5C53] text-[#D4AF37] text-[9px] font-bold px-2 py-0.5 rounded-full border border-[#D4AF37]">
-              YTH
-            </div>
-            <p className="font-serif text-xs sm:text-sm text-[#0D5C53]/80 italic mt-0.5">Kepada Yth;</p>
-            <p className="font-serif text-sm xs:text-base sm:text-lg font-black text-[#AA771C] leading-snug break-words">
+          <div className="flex flex-col items-center gap-1 w-full max-w-[290px] py-3 px-4 rounded-xl bg-[#FAF5EA] border-2 border-[#D4AF37]/50 shadow-[0_4px_14px_rgba(212,175,55,0.16)] relative">
+            <p className="font-serif text-xs sm:text-sm font-bold text-[#0D5C53] mt-0.5">Kepada Yth;</p>
+            <p className="font-serif text-sm xs:text-base sm:text-base font-black text-[#AA771C] leading-snug break-words">
               {guestName}
             </p>
           </div>
@@ -254,7 +269,7 @@ export default function Cover({ onOpen }: CoverProps) {
             onClick={onOpen}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            className="px-9 sm:px-11 py-2.5 sm:py-3 bg-gradient-to-r from-[#0D5C53] via-[#09403A] to-[#0D5C53] border-2 border-[#D4AF37] text-[#FCF6BA] font-serif font-black text-xs sm:text-sm rounded-full shadow-[0_8px_25px_rgba(13,92,83,0.4)] hover:shadow-[0_10px_30px_rgba(212,175,55,0.45)] cursor-pointer tracking-wider uppercase transition-all duration-200"
+            className="px-9 sm:px-9 py-2.5 sm:py-2.5 bg-gradient-to-r from-[#0D5C53] via-[#09403A] to-[#0D5C53] border-2 border-[#D4AF37] text-[#FCF6BA] font-serif font-black text-xs sm:text-xs rounded-full shadow-[0_8px_25px_rgba(13,92,83,0.4)] hover:shadow-[0_10px_30px_rgba(212,175,55,0.45)] cursor-pointer tracking-wider uppercase transition-all duration-200"
           >
             {siteConfig.cover.buttonText}
           </motion.button>

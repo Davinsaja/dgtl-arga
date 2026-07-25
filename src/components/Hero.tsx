@@ -150,7 +150,7 @@ export default function Hero() {
                 {/* Image Container */}
                 <div className="w-full h-full rounded-t-[88px] sm:rounded-t-[118px] rounded-b-[2px] overflow-hidden relative bg-white">
                   <img 
-                    src="/img/profil1.png" 
+                    src={siteConfig.child.photo} 
                     alt="Arganta Humayun Portrait" 
                     className="w-full h-full object-cover object-top brightness-[1.02]"
                     referrerPolicy="no-referrer"
