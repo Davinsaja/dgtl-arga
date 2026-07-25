@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, Sparkles, Heart } from 'lucide-react';
+import { Star, Sparkles } from 'lucide-react';
 
 import SplashScreen from './components/SplashScreen';
 import Cover from './components/Cover';
@@ -8,13 +8,14 @@ import Hero from './components/Hero';
 import AcaraHighlight from './components/AcaraHighlight';
 import Countdown from './components/Countdown';
 import DetailAcara from './components/DetailAcara';
-import GoogleMaps from './components/GoogleMaps';
-import Gallery from './components/Gallery';
-import GiftComponent from './components/Gift';
-import RSVPForm from './components/RSVPForm';
-import BukuTamu from './components/BukuTamu';
 import AudioPlayer from './components/AudioPlayer';
 import { siteConfig } from './config/site';
+
+const GoogleMaps = lazy(() => import('./components/GoogleMaps'));
+const Gallery = lazy(() => import('./components/Gallery'));
+const GiftComponent = lazy(() => import('./components/Gift'));
+const RSVPForm = lazy(() => import('./components/RSVPForm'));
+const BukuTamu = lazy(() => import('./components/BukuTamu'));
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(false);
@@ -102,33 +103,33 @@ export default function App() {
               
               <DetailAcara />
               
-              <GoogleMaps />
-              
-              <Gallery />
-              
-              <GiftComponent />
+              <Suspense fallback={<div className="py-8 text-center text-xs text-[#0D5C53]/50 font-medium">Memuat...</div>}>
+                <GoogleMaps />
+                <Gallery />
+                <GiftComponent />
 
-              {/* Combined RSVP & Wishes section */}
-              <section id="rsvp-wishes-section" className="relative section-padding bg-islamic-pattern border-t border-[#0D5C53]/10 overflow-hidden flex flex-col items-center">
-                {/* Visual Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0D5C53]/5 rounded-full filter blur-3xl pointer-events-none" />
+                {/* Combined RSVP & Wishes section */}
+                <section id="rsvp-wishes-section" className="relative section-padding bg-islamic-pattern border-t border-[#0D5C53]/10 overflow-hidden flex flex-col items-center">
+                  {/* Visual Glow */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0D5C53]/5 rounded-full filter blur-3xl pointer-events-none" />
 
-                <div className="max-w-4xl w-full flex flex-col items-center gap-10 relative z-10">
-                  {/* Header */}
-                  <div className="text-center space-y-2 mb-2">
-                    <h2 className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-[#0D5C53] font-medium">Ucapan &amp; Doa</h2>
-                    <p className="text-xs sm:text-sm text-gray-500 font-medium max-w-sm mx-auto leading-relaxed px-2">
-                      Berikan ucapan harapan dan do'a kepada putra kami tercinta
-                    </p>
+                  <div className="max-w-4xl w-full flex flex-col items-center gap-10 relative z-10">
+                    {/* Header */}
+                    <div className="text-center space-y-2 mb-2">
+                      <h2 className="font-serif italic text-2xl sm:text-3xl md:text-4xl text-[#0D5C53] font-medium">Ucapan &amp; Doa</h2>
+                      <p className="text-xs sm:text-sm text-gray-500 font-medium max-w-sm mx-auto leading-relaxed px-2">
+                        Berikan ucapan harapan dan do'a kepada putra kami tercinta
+                      </p>
+                    </div>
+
+                    {/* Responsive Grid: RSVP form + Guest Book list */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full items-start">
+                      <RSVPForm onSuccess={handleRSVPSuccess} />
+                      <BukuTamu refreshTrigger={refreshTrigger} />
+                    </div>
                   </div>
-
-                  {/* Responsive Grid: RSVP form + Guest Book list */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full items-start">
-                    <RSVPForm onSuccess={handleRSVPSuccess} />
-                    <BukuTamu refreshTrigger={refreshTrigger} />
-                  </div>
-                </div>
-              </section>
+                </section>
+              </Suspense>
 
               {/* Closing Statement & Footer */}
               <section id="closing-section" className="relative pt-16 sm:pt-20 md:pt-24 pb-0 bg-islamic-pattern overflow-hidden flex flex-col items-center text-center border-t border-[#0D5C53]/10">

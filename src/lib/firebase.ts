@@ -1,9 +1,5 @@
 /// <reference types="vite/client" />
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
 
-// Pastikan Anda mengisi kredensial ini di file .env lokal Anda atau di Environment Variables Vercel
-// dengan nama VITE_FIREBASE_...
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",
@@ -13,15 +9,26 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || ""
 };
 
-// Deteksi apakah konfigurasi Firebase sudah dimasukkan
-const isFirebaseEnabled = !!(
+export const isFirebaseEnabled = !!(
   import.meta.env.VITE_FIREBASE_API_KEY && 
   import.meta.env.VITE_FIREBASE_PROJECT_ID
 );
 
-const app = isFirebaseEnabled 
-  ? (getApps().length === 0 ? initializeApp(firebaseConfig) : getApp())
-  : null;
+let dbInstance: any = null;
 
-export const db = app ? getFirestore(app) : null;
-export { isFirebaseEnabled };
+export async function getFirestoreDb() {
+  if (!isFirebaseEnabled) return null;
+  if (dbInstance) return dbInstance;
+
+  try {
+    const { initializeApp, getApps, getApp } = await import('firebase/app');
+    const { getFirestore } = await import('firebase/firestore');
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+    dbInstance = getFirestore(app);
+    return dbInstance;
+  } catch (e) {
+    console.error("Failed to dynamically load Firebase:", e);
+    return null;
+  }
+}
+

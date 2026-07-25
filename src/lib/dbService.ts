@@ -1,17 +1,4 @@
-import { db, isFirebaseEnabled } from './firebase';
-import { 
-  collection, 
-  getDocs, 
-  getDoc,
-  addDoc, 
-  doc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  orderBy,
-  arrayUnion,
-  increment
-} from 'firebase/firestore';
+import { getFirestoreDb, isFirebaseEnabled } from './firebase';
 import { RSVP, RSVPReply } from '../types';
 
 // Helper to prevent database operations from hanging indefinitely if Firestore is not provisioned or configured
@@ -27,26 +14,30 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 2500): Pr
 export const dbService = {
   // 1. Get All RSVPs
   async getRSVPs(): Promise<RSVP[]> {
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const rsvpsRef = collection(db, 'rsvps');
-        const q = query(rsvpsRef, orderBy('createdAt', 'desc'));
-        const querySnapshot = await withTimeout(getDocs(q));
-        
-        const rsvps: RSVP[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          rsvps.push({
-            id: doc.id,
-            name: data.name || '',
-            presence: data.presence || 'hadir',
-            wish: data.wish || '',
-            createdAt: data.createdAt || new Date().toISOString(),
-            likes: data.likes || 0,
-            replies: data.replies || []
+        const db = await getFirestoreDb();
+        if (db) {
+          const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
+          const rsvpsRef = collection(db, 'rsvps');
+          const q = query(rsvpsRef, orderBy('createdAt', 'desc'));
+          const querySnapshot = await withTimeout(getDocs(q));
+          
+          const rsvps: RSVP[] = [];
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            rsvps.push({
+              id: doc.id,
+              name: data.name || '',
+              presence: data.presence || 'hadir',
+              wish: data.wish || '',
+              createdAt: data.createdAt || new Date().toISOString(),
+              likes: data.likes || 0,
+              replies: data.replies || []
+            });
           });
-        });
-        return rsvps;
+          return rsvps;
+        }
       } catch (err) {
         console.error("Firebase getRSVPs error, falling back to local api:", err);
       }
@@ -67,26 +58,30 @@ export const dbService = {
     const cleanWish = wish.trim();
     const createdAt = new Date().toISOString();
 
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const rsvpsRef = collection(db, 'rsvps');
-        const docRef = await withTimeout(addDoc(rsvpsRef, {
-          name: cleanName,
-          presence,
-          wish: cleanWish,
-          createdAt,
-          likes: 0,
-          replies: []
-        }));
-        return {
-          id: docRef.id,
-          name: cleanName,
-          presence,
-          wish: cleanWish,
-          createdAt,
-          likes: 0,
-          replies: []
-        };
+        const db = await getFirestoreDb();
+        if (db) {
+          const { collection, addDoc } = await import('firebase/firestore');
+          const rsvpsRef = collection(db, 'rsvps');
+          const docRef = await withTimeout(addDoc(rsvpsRef, {
+            name: cleanName,
+            presence,
+            wish: cleanWish,
+            createdAt,
+            likes: 0,
+            replies: []
+          }));
+          return {
+            id: docRef.id,
+            name: cleanName,
+            presence,
+            wish: cleanWish,
+            createdAt,
+            likes: 0,
+            replies: []
+          };
+        }
       } catch (err) {
         console.error("Firebase addRSVP error:", err);
       }
@@ -110,16 +105,20 @@ export const dbService = {
     const cleanName = name.trim();
     const cleanWish = wish.trim();
 
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const docRef = doc(db, 'rsvps', id);
-        await withTimeout(updateDoc(docRef, {
-          name: cleanName,
-          presence,
-          wish: cleanWish,
-          updatedAt: new Date().toISOString()
-        }));
-        return;
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, updateDoc } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', id);
+          await withTimeout(updateDoc(docRef, {
+            name: cleanName,
+            presence,
+            wish: cleanWish,
+            updatedAt: new Date().toISOString()
+          }));
+          return;
+        }
       } catch (err) {
         console.error("Firebase updateRSVP error:", err);
       }
@@ -139,11 +138,15 @@ export const dbService = {
 
   // 4. Delete RSVP (Self-delete)
   async deleteRSVP(id: string, isOwner: boolean): Promise<void> {
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const docRef = doc(db, 'rsvps', id);
-        await withTimeout(deleteDoc(docRef));
-        return;
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, deleteDoc } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', id);
+          await withTimeout(deleteDoc(docRef));
+          return;
+        }
       } catch (err) {
         console.error("Firebase deleteRSVP error:", err);
       }
@@ -165,13 +168,17 @@ export const dbService = {
 
   // 5. Like/Unlike RSVP
   async likeRSVP(id: string, action: 'like' | 'unlike'): Promise<void> {
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const docRef = doc(db, 'rsvps', id);
-        await withTimeout(updateDoc(docRef, {
-          likes: increment(action === 'unlike' ? -1 : 1)
-        }));
-        return;
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, updateDoc, increment } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', id);
+          await withTimeout(updateDoc(docRef, {
+            likes: increment(action === 'unlike' ? -1 : 1)
+          }));
+          return;
+        }
       } catch (err) {
         console.error("Firebase likeRSVP error:", err);
       }
@@ -205,13 +212,17 @@ export const dbService = {
       ...(cleanReplyTo ? { replyToName: cleanReplyTo } : {})
     };
 
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const docRef = doc(db, 'rsvps', rsvpId);
-        await withTimeout(updateDoc(docRef, {
-          replies: arrayUnion(newReply)
-        }));
-        return newReply;
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, updateDoc, arrayUnion } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', rsvpId);
+          await withTimeout(updateDoc(docRef, {
+            replies: arrayUnion(newReply)
+          }));
+          return newReply;
+        }
       } catch (err) {
         console.error("Firebase addReply error:", err);
       }
@@ -235,21 +246,25 @@ export const dbService = {
     const cleanName = name.trim();
     const cleanText = text.trim();
 
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const docRef = doc(db, 'rsvps', rsvpId);
-        const docSnap = await withTimeout(getDoc(docRef));
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const replies: RSVPReply[] = data.replies || [];
-          const updated = replies.map(r => {
-            if (r.id === replyId) {
-              return { ...r, name: cleanName, text: cleanText };
-            }
-            return r;
-          });
-          await withTimeout(updateDoc(docRef, { replies: updated }));
-          return;
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, getDoc, updateDoc } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', rsvpId);
+          const docSnap = await withTimeout(getDoc(docRef));
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const replies: RSVPReply[] = data.replies || [];
+            const updated = replies.map(r => {
+              if (r.id === replyId) {
+                return { ...r, name: cleanName, text: cleanText };
+              }
+              return r;
+            });
+            await withTimeout(updateDoc(docRef, { replies: updated }));
+            return;
+          }
         }
       } catch (err) {
         console.error("Firebase updateReply error:", err);
@@ -270,16 +285,20 @@ export const dbService = {
 
   // 8. Delete Reply
   async deleteReply(rsvpId: string, replyId: string): Promise<void> {
-    if (isFirebaseEnabled && db) {
+    if (isFirebaseEnabled) {
       try {
-        const docRef = doc(db, 'rsvps', rsvpId);
-        const docSnap = await withTimeout(getDoc(docRef));
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const replies: RSVPReply[] = data.replies || [];
-          const filtered = replies.filter(r => r.id !== replyId);
-          await withTimeout(updateDoc(docRef, { replies: filtered }));
-          return;
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, getDoc, updateDoc } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', rsvpId);
+          const docSnap = await withTimeout(getDoc(docRef));
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const replies: RSVPReply[] = data.replies || [];
+            const filtered = replies.filter(r => r.id !== replyId);
+            await withTimeout(updateDoc(docRef, { replies: filtered }));
+            return;
+          }
         }
       } catch (err) {
         console.error("Firebase deleteReply error:", err);
