@@ -9,6 +9,11 @@ export default function Gallery() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const images = siteConfig.gallery.images;
 
+  const getImgSrc = (item: string | { url: string; position?: string }) =>
+    typeof item === 'string' ? item : item.url;
+  const getImgPos = (item: string | { url: string; position?: string }) =>
+    typeof item === 'string' ? 'center top' : (item.position || 'center top');
+
   // Lock body & documentElement scroll when Lightbox is open to prevent background scrolling bug completely
   useEffect(() => {
     if (activeIdx !== null) {
@@ -60,7 +65,7 @@ export default function Gallery() {
 
         {/* Gallery Grid 2x2 on all screens for large, prominent photos */}
         <div className="grid grid-cols-2 gap-3.5 sm:gap-5 md:gap-6 w-full max-w-2xl mx-auto">
-          {images.map((imgSrc, idx) => (
+          {images.map((imgItem, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0 }}
@@ -72,10 +77,10 @@ export default function Gallery() {
               onClick={() => setActiveIdx(idx)}
             >
               <img
-                src={imgSrc}
+                src={getImgSrc(imgItem)}
                 alt={`Momen Arga ${idx + 1}`}
-                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                style={{ objectPosition: 'center 10%' }}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                style={{ objectPosition: getImgPos(imgItem) }}
                 referrerPolicy="no-referrer"
                 loading="lazy"
                 decodes="async"
@@ -132,7 +137,7 @@ export default function Gallery() {
                   onClick={(e) => e.stopPropagation()}
                 >
                   <img
-                    src={images[activeIdx]}
+                    src={getImgSrc(images[activeIdx])}
                     alt={`Momen Arga Perbesar ${activeIdx + 1}`}
                     className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border border-white/15"
                     referrerPolicy="no-referrer"

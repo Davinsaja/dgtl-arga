@@ -22,6 +22,7 @@ export interface SiteConfig {
     fatherName: string;
     motherName: string;
     photo: string;
+    objectPosition?: string;
   };
   event: {
     days: string[];
@@ -54,13 +55,14 @@ export interface SiteConfig {
     title: string;
   };
   gallery: {
-    images: string[];
+    images: (string | { url: string; position?: string })[];
   };
   cover: {
     label: string;
     title: string;
     buttonText: string;
     photo: string;
+    objectPosition?: string;
   };
   theme: {
     primary: string; // emerald
@@ -78,7 +80,8 @@ export const siteConfig: SiteConfig = {
     grade: "Kelas 5 SD",
     fatherName: "Sarif Imron Wakhidin",
     motherName: "Riawati",
-    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/profilgan.webp"
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/profilgan.webp",
+    objectPosition: "center top"
   },
   event: {
     days: ["Rabu", "Kamis", "Jumat"],
@@ -115,17 +118,16 @@ export const siteConfig: SiteConfig = {
     }
   ],
   music: {
-    // Direct streaming URL for soft Islamic Instrumental Oud & Flute
-    url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/djovan-medina-lights-soft-oud-amp-kanun-489145%20(1).mp3",
-    fallbackUrl: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/djovan-medina-lights-soft-oud-amp-kanun-489145%20(1).mp3",
-    title: "Medina Lights - Soft Oud & Kanun"
+    url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/laguku.mp3",
+    fallbackUrl: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/laguku.mp3",
+    title: "Lagu Undangan"
   },
   gallery: {
     images: [
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img1.webp",
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img2.webp",
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img3.webp",
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img4.webp"
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img1.webp", position: "center top" },
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img2.webp", position: "center top" },
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img3.webp", position: "center top" },
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img4.webp", position: "center top" }
     ]
   },
   cover: {
@@ -133,6 +135,7 @@ export const siteConfig: SiteConfig = {
     title: "TASYAKURAN KHITAN",
     buttonText: "Buka Undangan",
     photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/covergan.webp",
+    objectPosition: "62% 15%"
   },
   theme: {
     primary: "#0F766E",      // Emerald

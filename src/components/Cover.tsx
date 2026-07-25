@@ -236,7 +236,7 @@ export default function Cover({ onOpen }: CoverProps) {
                     src={siteConfig.cover.photo}
                     alt={siteConfig.child.fullName}
                     className="w-full h-full object-cover brightness-[1.03] contrast-[1.02] transition-transform duration-500 hover:scale-105"
-                    style={{ objectPosition: '62% 10%' }}
+                    style={{ objectPosition: siteConfig.cover.objectPosition || '62% 15%' }}
                     referrerPolicy="no-referrer"
                     loading="eager"
                     fetchPriority="high"

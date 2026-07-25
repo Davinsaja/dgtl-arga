@@ -24,22 +24,6 @@ export default function App() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [guestName, setGuestName] = useState("Bapak/Ibu/Saudara/i");
 
-  // Preload lazy components in background while user is viewing cover page
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      import('./components/AcaraHighlight');
-      import('./components/Countdown');
-      import('./components/DetailAcara');
-      import('./components/GoogleMaps');
-      import('./components/Gallery');
-      import('./components/Gift');
-      import('./components/RSVPForm');
-      import('./components/BukuTamu');
-      import('./components/AudioPlayer');
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
   // Read guest name 'to' parameter from URL query string
   useEffect(() => {
     try {
@@ -112,22 +96,15 @@ export default function App() {
               {/* Sections Flow */}
               <Hero />
               
-              {/* Top Priority Sections (Immediate Load) */}
-              <Suspense fallback={<div className="py-4 text-center text-xs text-[#0D5C53]/40">Memuat info acara...</div>}>
+              <Suspense fallback={<div className="py-8 text-center text-xs text-[#0D5C53]/50 font-medium">Memuat...</div>}>
                 <AcaraHighlight />
                 <Countdown />
                 <DetailAcara />
-              </Suspense>
-
-              {/* Media & Interactive Sections */}
-              <Suspense fallback={<div className="py-4 text-center text-xs text-[#0D5C53]/40">Memuat peta &amp; galeri...</div>}>
                 <GoogleMaps />
                 <Gallery />
                 <GiftComponent />
-              </Suspense>
 
-              {/* Combined RSVP & Wishes section */}
-              <Suspense fallback={<div className="py-4 text-center text-xs text-[#0D5C53]/40">Memuat ucapan...</div>}>
+                {/* Combined RSVP & Wishes section */}
                 <section id="rsvp-wishes-section" className="relative section-padding bg-islamic-pattern border-t border-[#0D5C53]/10 overflow-hidden flex flex-col items-center">
                   {/* Visual Glow */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0D5C53]/5 rounded-full filter blur-3xl pointer-events-none" />
@@ -151,38 +128,47 @@ export default function App() {
               </Suspense>
 
               {/* Closing Statement & Footer */}
-              <section id="closing-section" className="relative pt-16 sm:pt-20 md:pt-24 pb-0 bg-islamic-pattern overflow-hidden flex flex-col items-center text-center border-t border-[#0D5C53]/10">
-                <div className="max-w-2xl w-full flex flex-col items-center gap-10 relative z-10 px-4">
+              <section id="closing-section" className="relative pt-14 sm:pt-18 md:pt-20 pb-0 bg-islamic-pattern overflow-hidden flex flex-col items-center text-center border-t border-[#0D5C53]/10">
+                <div className="max-w-xl w-full flex flex-col items-center gap-8 relative z-10 px-4">
                   {/* Mandala ornament */}
-                  <div className="relative w-20 h-20 flex items-center justify-center">
+                  <motion.div 
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="relative w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center"
+                  >
                     <div className="absolute inset-0 bg-[#0D5C53] rotate-45 rounded-lg shadow-md border-2 border-[#D4AF37]/50" />
-                    <Star className="absolute w-7 h-7 text-[#D4AF37] fill-[#D4AF37]/20 z-10 animate-pulse" />
-                  </div>
+                    <motion.div
+                      animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Star className="w-6 h-6 text-[#D4AF37] fill-[#D4AF37]/30 z-10" />
+                    </motion.div>
+                  </motion.div>
 
                   {/* Closing Text */}
-                  <div className="space-y-4 max-w-lg">
-                    <p className="text-sm sm:text-base md:text-lg text-[#0D5C53] leading-relaxed font-bold">
-                      Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila{' '}
+                  <div className="space-y-3 max-w-md">
+                    <p className="text-sm sm:text-base text-[#0D5C53] leading-relaxed font-bold">
+                      Merupakan suatu kehormatan &amp; kebahagiaan bagi kami apabila{' '}
                       <span className="text-[#D4AF37] font-extrabold underline decoration-dashed decoration-[#D4AF37]/50 underline-offset-4 px-1.5 py-0.5 bg-[#0D5C53]/5 rounded">
                         {guestName}
                       </span>{' '}
-                      berkenan hadir memberikan do’a restu untuk putra kami tercinta.
+                      berkenan hadir memberikan doa restu.
                     </p>
-                    <p className="text-xs sm:text-sm text-gray-500 font-semibold italic">
-                      Atas kehadiran dan do’a restunya, kami ucapkan terima kasih.
+                    <p className="text-xs sm:text-sm text-gray-500 font-medium italic">
+                      Atas kehadiran &amp; doa restunya, kami ucapkan terima kasih.
                     </p>
                   </div>
 
                   {/* Closing Salam */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm sm:text-base font-extrabold tracking-[0.2em] text-[#D4AF37] uppercase">Wassalamu’alaikum Wr. Wb.</h3>
-                    <p className="text-xs sm:text-sm text-gray-400 font-black uppercase tracking-wider">Keluarga Besar:</p>
-                    <h4 className="font-serif text-xl sm:text-2xl md:text-3xl font-black text-[#0D5C53] tracking-wide drop-shadow-sm">{siteConfig.event.invitingFamily}</h4>
+                  <div className="space-y-2">
+                    <h3 className="text-xs sm:text-sm font-extrabold tracking-[0.2em] text-[#D4AF37] uppercase">Wassalamu’alaikum Wr. Wb.</h3>
+                    <p className="text-[11px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider">Keluarga Besar:</p>
+                    <h4 className="font-serif text-lg sm:text-xl md:text-2xl font-black text-[#0D5C53] tracking-wide">{siteConfig.event.invitingFamily}</h4>
                   </div>
                 </div>
 
-                {/* Decorative Wave & Child-friendly Islamic Ornaments as the bottom frame */}
-                <div className="relative w-full mt-20 bg-transparent flex flex-col justify-end">
+                {/* Decorative Wave & Islamic Ornaments as the bottom frame */}
+                <div className="relative w-full mt-16 bg-transparent flex flex-col justify-end">
                   
                   {/* The Wavy Boundary Line */}
                   <div className="relative w-full">
@@ -192,12 +178,12 @@ export default function App() {
                       <path d="M0,1 C20,9 35,17 50,17 C65,17 80,9 100,1" fill="none" stroke="#D4AF37" strokeWidth="0.1" opacity="0.5" />
                     </svg>
 
-                    {/* Hanging Ornaments hanging from the wave curve */}
+                    {/* Hanging Ornaments with smooth gentle pendulum animations */}
                     <div className="absolute inset-x-0 top-[10px] sm:top-[15px] flex justify-between px-8 sm:px-16 md:px-24 pointer-events-none z-20">
                       {/* Ornament Left: Hanging Islamic Lantern */}
                       <motion.div 
-                        animate={{ rotate: [-4, 4, -4] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        animate={{ rotate: [-2, 2, -2] }}
+                        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
                         className="origin-top flex flex-col items-center"
                       >
                         <div className="w-[1.5px] h-8 sm:h-12 bg-[#D4AF37]/65" />
@@ -210,8 +196,8 @@ export default function App() {
 
                       {/* Ornament Left Inner: Swaying Star */}
                       <motion.div 
-                        animate={{ rotate: [3, -3, 3] }}
-                        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                        animate={{ rotate: [2, -2, 2] }}
+                        transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
                         className="origin-top flex flex-col items-center hidden sm:flex"
                       >
                         <div className="w-[1px] h-12 sm:h-16 bg-[#D4AF37]/50" />
@@ -222,8 +208,8 @@ export default function App() {
 
                       {/* Ornament Right Inner: Crescent Moon */}
                       <motion.div 
-                        animate={{ rotate: [-3, 3, -3] }}
-                        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+                        animate={{ rotate: [-2, 2, -2] }}
+                        transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
                         className="origin-top flex flex-col items-center hidden sm:flex"
                       >
                         <div className="w-[1px] h-12 sm:h-16 bg-[#D4AF37]/50" />
@@ -234,8 +220,8 @@ export default function App() {
 
                       {/* Ornament Right: Decorative Ketupat */}
                       <motion.div 
-                        animate={{ rotate: [5, -5, 5] }}
-                        transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+                        animate={{ rotate: [2.5, -2.5, 2.5] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                         className="origin-top flex flex-col items-center"
                       >
                         <div className="w-[1.5px] h-8 sm:h-12 bg-[#D4AF37]/65" />
@@ -254,44 +240,53 @@ export default function App() {
                   </div>
 
                   {/* Dark Green Solid Footer Base Block */}
-                  <footer className="w-full bg-[#0D5C53] text-[#FAF6ED] pt-12 pb-10 px-4 sm:px-6 safe-bottom flex flex-col items-center relative z-10 select-none overflow-hidden">
+                  <footer className="w-full bg-[#0D5C53] text-[#FAF6ED] pt-10 pb-8 px-4 sm:px-6 safe-bottom flex flex-col items-center relative z-10 select-none overflow-hidden">
                     
-                    {/* Tiny Floating Mini-Stars behind content for magical kids vibe */}
-                    <div className="absolute top-2 left-[10%] opacity-20 animate-bounce"><Sparkles className="w-4 h-4 text-[#D4AF37]" /></div>
-                    <div className="absolute top-4 right-[15%] opacity-15 animate-pulse"><Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" /></div>
-                    <div className="absolute bottom-6 left-[20%] opacity-25 animate-pulse"><Star className="w-3 h-3 text-[#D4AF37]" /></div>
-                    <div className="absolute bottom-4 right-[8%] opacity-20 animate-bounce"><Sparkles className="w-4 h-4 text-[#D4AF37]" /></div>
+                    {/* Floating ambient sparkles behind footer content */}
+                    <motion.div 
+                      animate={{ y: [0, -4, 0], opacity: [0.2, 0.5, 0.2] }} 
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} 
+                      className="absolute top-3 left-[12%] pointer-events-none"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    </motion.div>
+                    <motion.div 
+                      animate={{ y: [0, -3, 0], opacity: [0.15, 0.4, 0.15] }} 
+                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }} 
+                      className="absolute bottom-4 right-[12%] pointer-events-none"
+                    >
+                      <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
+                    </motion.div>
 
                     {/* Footer Contents */}
-                    <div className="max-w-md w-full flex flex-col items-center space-y-4 relative z-20 text-center">
-                      <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-serif text-sm sm:text-base md:text-lg font-black text-[#D4AF37] uppercase tracking-wider">
+                    <div className="max-w-md w-full flex flex-col items-center space-y-3 relative z-20 text-center">
+                      <div className="flex items-center justify-center gap-2 font-serif text-xs sm:text-sm md:text-base font-bold text-[#D4AF37] tracking-wider">
                         <span>Walimatul Khitan</span>
-                        <Sparkles className="w-4 h-4 text-[#D4AF37] animate-pulse shrink-0" />
-                        <span className="break-words">{siteConfig.child.fullName}</span>
+                        <span className="w-1 h-1 rounded-full bg-[#D4AF37]" />
+                        <span>{siteConfig.child.fullName}</span>
                       </div>
                       
-                      <p className="text-xs sm:text-sm text-[#FAF6ED]/80 leading-relaxed font-medium max-w-sm">
-                        Terima kasih atas doa restu Anda untuk ananda tercinta.
-                      </p>
+                      {/* Minimalist Divider Line with Center Diamond Ornament */}
+                      <div className="flex items-center gap-3 w-48 justify-center my-0.5 opacity-75">
+                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-[#D4AF37]" />
+                        <div className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37]" />
+                        <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-[#D4AF37]" />
+                      </div>
 
-                      {/* Simple line decoration */}
-                      <div className="w-16 h-[2px] bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent my-1" />
-
-                      <div className="flex flex-col items-center space-y-1 text-[11px] sm:text-xs text-[#FAF6ED]/70 font-medium">
-                        <p>
-                          Dibuat dengan sepenuh hati oleh <span className="text-[#D4AF37] font-bold">VINSZ</span>
-                        </p>
+                      <div className="text-[11px] sm:text-xs text-[#FAF6ED]/75 font-medium flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                        <span>Dibuat oleh <strong className="text-[#D4AF37]">VINSZ</strong></span>
+                        <span className="opacity-40">•</span>
                         <a 
                           href="https://wa.me/6281944090188?text=Halo%20VINSZ,%20saya%20ingin%20order%20undangan%20digital"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-[#D4AF37] hover:underline font-bold transition-all pt-1"
+                          className="text-[#D4AF37] hover:underline font-bold transition-all"
                         >
-                          <span>Order? Hubungi 081944090188</span>
+                          Order: 081944090188
                         </a>
                       </div>
 
-                      <p className="font-mono text-[9px] text-[#FAF6ED]/40 tracking-wider pt-1">
+                      <p className="text-[9px] text-[#FAF6ED]/40 tracking-wider">
                         © 2026 All Rights Reserved.
                       </p>
                     </div>
