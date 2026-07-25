@@ -43,7 +43,7 @@ export default function App() {
   // Scroll to invitation top on open
   useEffect(() => {
     if (opened) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo(0, 0);
     }
   }, [opened]);
 
@@ -71,14 +71,13 @@ export default function App() {
       </AnimatePresence>
 
       {!showSplash && (
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {!opened ? (
             /* Step 2: Personalized Front Envelope / Cover */
             <motion.div
               key="cover"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0, y: -100 }}
-              transition={{ duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
+              initial={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: '-100%', transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] } }}
               className="fixed inset-0 z-40 flex justify-center bg-[#E8E4DA] overflow-hidden"
             >
               <div className="invitation-shell w-full h-full">
@@ -91,7 +90,7 @@ export default function App() {
               key="main-invitation"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.45 }}
               className="invitation-shell w-full flex flex-col min-h-screen bg-[#F6F1E6]"
             >
               {/* Sections Flow */}

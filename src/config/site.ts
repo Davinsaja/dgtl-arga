@@ -121,14 +121,11 @@ export const siteConfig: SiteConfig = {
     title: "Medina Lights - Soft Oud & Kanun"
   },
   gallery: {
-    // Array of mock elegant pictures. Since images are in public/gallery, we will serve highly stunning Unsplash photos of Islamic motifs, happy families, and children to ensure a premium look.
     images: [
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800", // Mosques & lanterns
-      "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&q=80&w=800", // Golden dome
-      "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&q=80&w=800", // Islamic art ornament
-      "https://images.unsplash.com/photo-1609599006353-e629f1d29718?auto=format&fit=crop&q=80&w=800", // Quran book
-      "https://images.unsplash.com/photo-1590075865003-e48277faa558?auto=format&fit=crop&q=80&w=800", // Moroccan aesthetic archway
-      "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&q=80&w=800"  // Soft light ray
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img1.jpeg",
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img2.jpeg",
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img3.jpeg",
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img4.jpeg"
     ]
   },
   cover: {

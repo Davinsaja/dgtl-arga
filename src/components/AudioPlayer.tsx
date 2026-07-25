@@ -14,17 +14,17 @@ function PlayIcon({ className }: { className?: string }) {
   );
 }
 
-function EqualizerIcon({ className, animated }: { className?: string; animated?: boolean }) {
+function EqualizerIcon({ className }: { className?: string }) {
   const bars = [
-    { x: 4, h: 10, cls: 'audio-eq-bar-1' },
-    { x: 9, h: 16, cls: 'audio-eq-bar-2' },
-    { x: 14, h: 12, cls: 'audio-eq-bar-3' },
-    { x: 19, h: 18, cls: 'audio-eq-bar-4' },
+    { x: 4, h: 10 },
+    { x: 9, h: 16 },
+    { x: 14, h: 12 },
+    { x: 19, h: 18 },
   ];
 
   return (
     <svg viewBox="0 0 28 24" fill="currentColor" className={className} aria-hidden="true">
-      {bars.map(({ x, h, cls }) => (
+      {bars.map(({ x, h }) => (
         <rect
           key={x}
           x={x}
@@ -32,7 +32,6 @@ function EqualizerIcon({ className, animated }: { className?: string; animated?:
           width="3.5"
           height={h}
           rx="1.75"
-          className={animated ? `audio-eq-bar ${cls}` : undefined}
         />
       ))}
     </svg>
@@ -127,7 +126,7 @@ export default function AudioPlayer({ isPlaying, setIsPlaying }: AudioPlayerProp
   };
 
   return (
-    <div id="audio-player-container" className="fixed bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] right-4 md:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] md:right-6 z-50">
+    <div id="audio-player-container" className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] right-3.5 sm:bottom-6 sm:right-6 z-40">
       <audio
         ref={audioRef}
         src={currentSrc}
@@ -140,27 +139,20 @@ export default function AudioPlayer({ isPlaying, setIsPlaying }: AudioPlayerProp
         <button
           id="audio-floating-fab"
           onClick={togglePlay}
-          className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none cursor-pointer group ${
-            isPlaying ? 'audio-fab-playing' : 'shadow-book hover:shadow-lg'
-          }`}
+          className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg focus:outline-none cursor-pointer group"
           aria-label={isPlaying ? 'Jeda musik' : 'Putar musik'}
         >
-          {/* Gradient ring border */}
-          <span className="absolute inset-0 rounded-full bg-gradient-to-br from-[#D4AF37] via-[#FCF6BA] to-[#AA771C] p-[2px]">
-            <span className="block w-full h-full rounded-full bg-[#0D5C53] group-hover:bg-[#09403A] transition-colors duration-300" />
+          {/* Subtle metallic gold ring border */}
+          <span className="absolute inset-0 rounded-full bg-gradient-to-br from-[#D4AF37] via-[#FCF6BA] to-[#AA771C] p-[1.5px]">
+            <span className="block w-full h-full rounded-full bg-[#0D5C53] group-hover:bg-[#09403A] transition-colors duration-200" />
           </span>
 
-          {/* Soft inner glow when playing */}
-          {isPlaying && (
-            <span className="absolute inset-[3px] rounded-full bg-[#D4AF37]/10 pointer-events-none" />
-          )}
-
           {/* Icon */}
-          <span className="relative z-10 text-[#D4AF37] transition-all duration-300">
+          <span className="relative z-10 text-[#D4AF37] transition-all duration-200">
             {isPlaying ? (
-              <EqualizerIcon className="w-6 h-6" animated />
+              <EqualizerIcon className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
             ) : (
-              <PlayIcon className="w-6 h-6 ml-0.5 drop-shadow-sm" />
+              <PlayIcon className="w-5 h-5 sm:w-5.5 sm:h-5.5 ml-0.5" />
             )}
           </span>
         </button>

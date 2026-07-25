@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Image, X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { siteConfig } from '../config/site';
@@ -7,6 +8,24 @@ import { BatikDivider } from './BookDecoration';
 export default function Gallery() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const images = siteConfig.gallery.images;
+
+  // Lock body & documentElement scroll when Lightbox is open to prevent background scrolling bug completely
+  useEffect(() => {
+    if (activeIdx !== null) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [activeIdx]);
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -39,17 +58,17 @@ export default function Gallery() {
           </p>
         </div>
 
-        {/* Carousel Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 w-full">
+        {/* Gallery Grid 2x2 on all screens for large, prominent photos */}
+        <div className="grid grid-cols-2 gap-3.5 sm:gap-5 md:gap-6 w-full max-w-2xl mx-auto">
           {images.map((imgSrc, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: idx * 0.08 }}
+              transition={{ duration: 0.5, delay: idx * 0.08 }}
               whileHover={{ y: -6 }}
-              className="relative aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-[#0D5C53]/10 cursor-zoom-in group"
+              className="relative aspect-[4/3] sm:aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-[#0D5C53]/15 cursor-zoom-in group transition-all duration-300"
               onClick={() => setActiveIdx(idx)}
             >
               <img
@@ -70,71 +89,74 @@ export default function Gallery() {
           ))}
         </div>
 
-        {/* Lightbox Modal overlay */}
-        <AnimatePresence>
-          {activeIdx !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-3 sm:p-4 md:p-8 safe-top safe-bottom"
-              onClick={() => setActiveIdx(null)}
-            >
-              {/* Close Button */}
-              <button
-                id="lightbox-close-btn"
-                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-[#FAFAF7]/70 hover:text-[#FAFAF7] hover:bg-white/10 rounded-full transition-colors z-50 focus:outline-none"
-                onClick={() => setActiveIdx(null)}
-                aria-label="Close Lightbox"
-              >
-                <X className="w-6 h-6" />
-              </button>
-
-              {/* Prev Button */}
-              <button
-                id="lightbox-prev-btn"
-                className="absolute left-2 sm:left-4 p-2 sm:p-3 text-[#FAFAF7]/70 hover:text-[#FAFAF7] hover:bg-white/10 rounded-full transition-colors z-50 focus:outline-none"
-                onClick={handlePrev}
-                aria-label="Previous Image"
-              >
-                <ChevronLeft className="w-8 h-8" />
-              </button>
-
-              {/* Active Image Frame */}
+        {/* Lightbox Modal overlay via React Portal mounted to document.body */}
+        {typeof document !== 'undefined' && createPortal(
+          <AnimatePresence>
+            {activeIdx !== null && (
               <motion.div
-                key={activeIdx}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className="relative max-w-5xl max-h-[80vh] w-full h-full flex items-center justify-center"
-                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 w-screen h-screen z-[999999] bg-black/98 flex flex-col items-center justify-center p-4 overflow-hidden touch-none select-none"
+                onClick={() => setActiveIdx(null)}
               >
-                <img
-                  src={images[activeIdx]}
-                  alt={`Momen Arga Perbesar ${activeIdx + 1}`}
-                  className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl border border-white/5"
-                  referrerPolicy="no-referrer"
-                />
-                
-                {/* Index badge counter */}
-                <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2 text-white/60 text-xs font-mono">
-                  {activeIdx + 1} / {images.length}
-                </div>
-              </motion.div>
+                {/* Close Button */}
+                <button
+                  id="lightbox-close-btn"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000000] focus:outline-none cursor-pointer"
+                  onClick={() => setActiveIdx(null)}
+                  aria-label="Close Lightbox"
+                >
+                  <X className="w-6 h-6" />
+                </button>
 
-              {/* Next Button */}
-              <button
-                id="lightbox-next-btn"
-                className="absolute right-2 sm:right-4 p-2 sm:p-3 text-[#FAFAF7]/70 hover:text-[#FAFAF7] hover:bg-white/10 rounded-full transition-colors z-50 focus:outline-none"
-                onClick={handleNext}
-                aria-label="Next Image"
-              >
-                <ChevronRight className="w-8 h-8" />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {/* Prev Button */}
+                <button
+                  id="lightbox-prev-btn"
+                  className="absolute left-2 sm:left-6 p-2.5 sm:p-3 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000000] focus:outline-none cursor-pointer"
+                  onClick={handlePrev}
+                  aria-label="Previous Image"
+                >
+                  <ChevronLeft className="w-7 h-7 sm:w-8 sm:h-8" />
+                </button>
+
+                {/* Active Image Frame */}
+                <motion.div
+                  key={activeIdx}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="relative max-w-4xl max-h-[85vh] w-full flex flex-col items-center justify-center px-2 z-[1000000]"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <img
+                    src={images[activeIdx]}
+                    alt={`Momen Arga Perbesar ${activeIdx + 1}`}
+                    className="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border border-white/15"
+                    referrerPolicy="no-referrer"
+                  />
+                  
+                  {/* Index badge counter */}
+                  <div className="mt-3.5 px-4 py-1 bg-black/80 border border-white/20 rounded-full text-white/90 text-xs font-mono tracking-widest shadow-lg">
+                    {activeIdx + 1} / {images.length}
+                  </div>
+                </motion.div>
+
+                {/* Next Button */}
+                <button
+                  id="lightbox-next-btn"
+                  className="absolute right-2 sm:right-6 p-2.5 sm:p-3 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000000] focus:outline-none cursor-pointer"
+                  onClick={handleNext}
+                  aria-label="Next Image"
+                >
+                  <ChevronRight className="w-7 h-7 sm:w-8 sm:h-8" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
 
       </div>
     </section>
