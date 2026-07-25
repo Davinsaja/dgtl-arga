@@ -153,6 +153,7 @@ export default function Hero() {
                     src={siteConfig.child.photo} 
                     alt="Arganta Humayun Portrait" 
                     className="w-full h-full object-cover object-top brightness-[1.02]"
+                    style={{ objectPosition: 'center 10%' }}
                     referrerPolicy="no-referrer"
                     fetchPriority="high"
                     decodes="async"

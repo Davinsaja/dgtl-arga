@@ -78,7 +78,7 @@ export const siteConfig: SiteConfig = {
     grade: "Kelas 5 SD",
     fatherName: "Sarif Imron Wakhidin",
     motherName: "Riawati",
-    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/profilgan.jpeg"
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/profilgan.webp"
   },
   event: {
     days: ["Rabu", "Kamis", "Jumat"],
@@ -122,17 +122,17 @@ export const siteConfig: SiteConfig = {
   },
   gallery: {
     images: [
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img1.jpeg",
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img2.jpeg",
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img3.jpeg",
-      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/img4.jpeg"
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img1.webp",
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img2.webp",
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img3.webp",
+      "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img4.webp"
     ]
   },
   cover: {
     label: "Undangan",
     title: "TASYAKURAN KHITAN",
     buttonText: "Buka Undangan",
-    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/editprofile.jpeg",
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/covergan.webp",
   },
   theme: {
     primary: "#0F766E",      // Emerald

@@ -74,7 +74,8 @@ export default function Gallery() {
               <img
                 src={imgSrc}
                 alt={`Momen Arga ${idx + 1}`}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                style={{ objectPosition: 'center 10%' }}
                 referrerPolicy="no-referrer"
                 loading="lazy"
                 decodes="async"
