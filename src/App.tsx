@@ -24,6 +24,22 @@ export default function App() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [guestName, setGuestName] = useState("Bapak/Ibu/Saudara/i");
 
+  // Preload lazy components in background while user is viewing cover page
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      import('./components/AcaraHighlight');
+      import('./components/Countdown');
+      import('./components/DetailAcara');
+      import('./components/GoogleMaps');
+      import('./components/Gallery');
+      import('./components/Gift');
+      import('./components/RSVPForm');
+      import('./components/BukuTamu');
+      import('./components/AudioPlayer');
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Read guest name 'to' parameter from URL query string
   useEffect(() => {
     try {
@@ -96,15 +112,22 @@ export default function App() {
               {/* Sections Flow */}
               <Hero />
               
-              <Suspense fallback={<div className="py-8 text-center text-xs text-[#0D5C53]/50 font-medium">Memuat...</div>}>
+              {/* Top Priority Sections (Immediate Load) */}
+              <Suspense fallback={<div className="py-4 text-center text-xs text-[#0D5C53]/40">Memuat info acara...</div>}>
                 <AcaraHighlight />
                 <Countdown />
                 <DetailAcara />
+              </Suspense>
+
+              {/* Media & Interactive Sections */}
+              <Suspense fallback={<div className="py-4 text-center text-xs text-[#0D5C53]/40">Memuat peta &amp; galeri...</div>}>
                 <GoogleMaps />
                 <Gallery />
                 <GiftComponent />
+              </Suspense>
 
-                {/* Combined RSVP & Wishes section */}
+              {/* Combined RSVP & Wishes section */}
+              <Suspense fallback={<div className="py-4 text-center text-xs text-[#0D5C53]/40">Memuat ucapan...</div>}>
                 <section id="rsvp-wishes-section" className="relative section-padding bg-islamic-pattern border-t border-[#0D5C53]/10 overflow-hidden flex flex-col items-center">
                   {/* Visual Glow */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0D5C53]/5 rounded-full filter blur-3xl pointer-events-none" />
