@@ -22,10 +22,13 @@
     <meta name="twitter:description" content="Undangan Tasyakuran Khitan Arganta Humayun (Arga). Mohon doa restu." />
     <meta name="twitter:image" content="https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/editprofile.jpeg" />
 
-    <!-- Preconnect and Fonts -->
+    <!-- Preconnect and Async Fonts (Non-render-blocking for instant FCP/LCP) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,500;1,600&family=Poppins:wght@400;500;600;700;800;900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,500;1,600&family=Poppins:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,500;1,600&family=Poppins:wght@400;500;600;700;800;900&display=swap" />
+    </noscript>
 
     <!-- Preload LCP Images -->
     <link rel="preload" as="image" href="https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/mp3/editprofile.jpeg" fetchpriority="high" />

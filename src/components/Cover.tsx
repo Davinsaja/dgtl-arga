@@ -237,6 +237,7 @@ export default function Cover({ onOpen }: CoverProps) {
                     alt={siteConfig.child.fullName}
                     className="w-full h-full object-cover object-top brightness-[1.03] contrast-[1.02] transition-transform duration-500 hover:scale-105"
                     referrerPolicy="no-referrer"
+                    loading="eager"
                     fetchPriority="high"
                     decodes="async"
                   />

@@ -5,12 +5,12 @@ import { Star, Sparkles } from 'lucide-react';
 import SplashScreen from './components/SplashScreen';
 import Cover from './components/Cover';
 import Hero from './components/Hero';
-import AcaraHighlight from './components/AcaraHighlight';
-import Countdown from './components/Countdown';
-import DetailAcara from './components/DetailAcara';
-import AudioPlayer from './components/AudioPlayer';
 import { siteConfig } from './config/site';
 
+const AcaraHighlight = lazy(() => import('./components/AcaraHighlight'));
+const Countdown = lazy(() => import('./components/Countdown'));
+const DetailAcara = lazy(() => import('./components/DetailAcara'));
+const AudioPlayer = lazy(() => import('./components/AudioPlayer'));
 const GoogleMaps = lazy(() => import('./components/GoogleMaps'));
 const Gallery = lazy(() => import('./components/Gallery'));
 const GiftComponent = lazy(() => import('./components/Gift'));
@@ -96,13 +96,10 @@ export default function App() {
               {/* Sections Flow */}
               <Hero />
               
-              <AcaraHighlight />
-              
-              <Countdown />
-              
-              <DetailAcara />
-              
               <Suspense fallback={<div className="py-8 text-center text-xs text-[#0D5C53]/50 font-medium">Memuat...</div>}>
+                <AcaraHighlight />
+                <Countdown />
+                <DetailAcara />
                 <GoogleMaps />
                 <Gallery />
                 <GiftComponent />
@@ -280,7 +277,9 @@ export default function App() {
               </section>
 
               {/* Floating Ambient Music Controller */}
-              <AudioPlayer isPlaying={isMusicPlaying} setIsPlaying={setIsMusicPlaying} />
+              <Suspense fallback={null}>
+                <AudioPlayer isPlaying={isMusicPlaying} setIsPlaying={setIsMusicPlaying} />
+              </Suspense>
 
             </motion.div>
           )}

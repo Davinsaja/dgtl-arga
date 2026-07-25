@@ -63,12 +63,12 @@ export default function Gallery() {
           {images.map((imgSrc, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.08 }}
-              whileHover={{ y: -6 }}
-              className="relative aspect-[4/3] sm:aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-[#0D5C53]/15 cursor-zoom-in group transition-all duration-300"
+              transition={{ duration: 0.2 }}
+              whileHover={{ y: -4 }}
+              className="relative aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md hover:shadow-xl border border-[#0D5C53]/15 cursor-zoom-in group transition-all duration-200"
               onClick={() => setActiveIdx(idx)}
             >
               <img
