@@ -118,7 +118,7 @@ export default function Hero() {
             <span className="text-[#D4AF37] font-extrabold underline decoration-dashed decoration-[#D4AF37]/50 underline-offset-4 px-1 py-0.5 bg-[#0D5C53]/5 rounded">
               {displayName}
             </span>{' '}
-            pada acara syukuran khitan anak kami:
+            pada acara tasyakuran khitan anak kami:
           </p>
         </motion.div>
 

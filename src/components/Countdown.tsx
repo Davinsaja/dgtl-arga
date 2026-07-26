@@ -55,8 +55,8 @@ export default function Countdown() {
             <Clock className="w-4 h-4" />
             <span className="text-[10px] tracking-[0.2em] font-bold uppercase text-[#0D5C53]/75">MOMEN KHITANAN</span>
           </div>
-          <h2 className="font-serif text-2xl sm:text-3xl font-black text-[#0D5C53]">Menuju Hari Bahagia</h2>
-          <p className="text-xs text-gray-500 max-w-sm mx-auto px-2">Doa dan restu Anda di hari bahagia syukuran khitanan putra kami tercinta.</p>
+          <h2 className="font-serif text-2xl sm:text-3xl font-black text-[#0D5C53]">Menuju Hari Khitan</h2>
+          <p className="text-xs text-gray-500 max-w-sm mx-auto px-2">Doa dan restu Anda di hari tasyakuran khitanan putra kami tercinta.</p>
         </div>
 
         {/* Countdown view logic */}

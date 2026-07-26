@@ -18,8 +18,8 @@ export default function DetailAcara() {
       day: "Kamis",
       date: "6 Agustus 2026",
       time: "09.00 WIB - Selesai",
-      title: "Prosesi Khitanan",
-      desc: "Prosesi utama pensucian khitan ananda Arganta Humayun demi menyempurnakan fitrah sebagai muslim yang bersih dan bertaqwa."
+      title: "Resepsi Syukuran",
+      desc: "Momen syukur dan silaturahmi atas khitanan putra kami, disertai doa untuk masa depannya."
     },
     {
       id: "event-3",
