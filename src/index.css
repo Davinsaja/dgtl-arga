@@ -164,5 +164,20 @@ svg {
   border-image: linear-gradient(135deg, #B38728 0%, #FCF6BA 25%, #B38728 50%, #FCF6BA 75%, #AA771C 100%) 1;
 }
 
+/* Custom smooth slow rotation for music player logo */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 6s linear infinite;
+  will-change: transform;
+}
+
 
 
