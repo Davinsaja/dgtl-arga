@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Deep Islamic Emerald Gradient -->
+    <linearGradient id="emeraldBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09403A"/>
+      <stop offset="50%" stop-color="#0D5C53"/>
+      <stop offset="100%" stop-color="#052622"/>
+    </linearGradient>
+
+    <!-- Rich Gold Metallic Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CA9E42"/>
+      <stop offset="25%" stop-color="#FFF3B0"/>
+      <stop offset="50%" stop-color="#D4AF37"/>
+      <stop offset="75%" stop-color="#FBF5B7"/>
+      <stop offset="100%" stop-color="#9A7025"/>
+    </linearGradient>
+
+    <!-- Secondary Bright Gold for Highlights -->
+    <linearGradient id="goldHighlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8D6"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+
+    <!-- Radial Center Glow -->
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0.3"/>
+      <stop offset="70%" stop-color="#0D5C53" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#0D5C53" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Drop Shadow for Depth -->
+    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+
+    <filter id="goldGlowFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#D4AF37" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Container (Squircle) -->
+  <rect width="512" height="512" rx="120" fill="url(#emeraldBg)"/>
+
+  <!-- Radial Golden Glow in Center -->
+  <circle cx="256" cy="256" r="200" fill="url(#centerGlow)"/>
+
+  <!-- Decorative Islamic Geometry Frame (Octagon / Rotated Squares in background) -->
+  <g fill="none" stroke="url(#goldGrad)" opacity="0.22" stroke-width="2">
+    <rect x="76" y="76" width="360" height="360" rx="30" />
+    <rect x="76" y="76" width="360" height="360" rx="30" transform="rotate(45 256 256)" />
+    <circle cx="256" cy="256" r="215" stroke-dasharray="6 6" />
+  </g>
+
+  <!-- Outer Golden Border Frame -->
+  <rect x="24" y="24" width="464" height="464" rx="100" fill="none" stroke="url(#goldGrad)" stroke-width="8" opacity="0.9" />
+  <rect x="36" y="36" width="440" height="440" rx="88" fill="none" stroke="url(#goldGrad)" stroke-width="2" opacity="0.4" />
+
+  <!-- Main Motif Group -->
+  <g filter="url(#dropShadow)">
+    
+    <!-- Crescent Moon (Left side, elegant curve) -->
+    <path d="M 235,115 
+             C 145,115 85,185 85,266 
+             C 85,347 145,415 235,415 
+             C 175,385 130,330 130,266 
+             C 130,202 175,145 235,115 Z" 
+          fill="url(#goldGrad)" filter="url(#goldGlowFilter)" />
+
+    <!-- Monogram "A" - Arganta -->
+    <g fill="url(#goldGrad)" filter="url(#goldGlowFilter)">
+      <!-- Monogram 'A' Solid Calligraphic Path -->
+      <path d="
+        M 305, 140
+        L 322, 140
+        C 328, 140 334, 144 337, 150
+        L 410, 360
+        C 416, 376 426, 379 434, 380
+        L 434, 388
+        L 354, 388
+        L 354, 380
+        C 365, 379 373, 373 367, 356
+        L 348, 304
+        L 258, 304
+        L 230, 358
+        C 224, 370 231, 379 244, 380
+        L 244, 388
+        L 174, 388
+        L 174, 380
+        C 186, 379 196, 372 204, 356
+        Z
+        M 272, 272
+        L 336, 272
+        L 304, 180
+        Z
+      " />
+
+      <!-- Horizontal Highlight Ribbon Bar inside 'A' -->
+      <path d="M 238, 296 C 275, 280 330, 280 368, 296 C 330, 288 275, 288 238, 296 Z" fill="url(#goldHighlight)" />
+
+      <!-- Islamic 8-Pointed Star (Rub el Hizb) Ornament at Top Right -->
+      <g transform="translate(372, 138)">
+        <rect x="-22" y="-22" width="44" height="44" rx="4" fill="url(#goldGrad)" />
+        <rect x="-22" y="-22" width="44" height="44" rx="4" fill="url(#goldGrad)" transform="rotate(45)" />
+        <circle cx="0" cy="0" r="10" fill="#0D5C53" />
+        <circle cx="0" cy="0" r="4.5" fill="url(#goldHighlight)" />
+      </g>
+
+      <!-- Small Star Sparkle at Top Left Crescent Tip -->
+      <path d="M 235, 115 L 238, 122 L 245, 125 L 238, 128 L 235, 135 L 232, 128 L 225, 125 L 232, 122 Z" fill="url(#goldHighlight)" />
+    </g>
+
+  </g>
+</svg>
