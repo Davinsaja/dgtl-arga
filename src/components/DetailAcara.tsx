@@ -50,7 +50,7 @@ export default function DetailAcara() {
         </div>
 
         {/* Schedule Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 md:gap-8 w-full">
           {schedules.map((schedule, idx) => {
             const textDayClass = "text-[#0D5C53]";
             const textDateClass = "text-[#D4AF37]";

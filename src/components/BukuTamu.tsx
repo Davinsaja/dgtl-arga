@@ -17,7 +17,8 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
   // States for user self-edit/delete
   const [myRsvpIds, setMyRsvpIds] = useState<string[]>([]);
   const [myReplyIds, setMyReplyIds] = useState<string[]>([]);
-  const [myLikedIds, setMyLikedIds] = useState<string[]>([]); // To prevent multiple likes on client side simply
+  const [myLikedIds, setMyLikedIds] = useState<string[]>([]); // Liked main RSVP IDs
+  const [myLikedReplyIds, setMyLikedReplyIds] = useState<string[]>([]); // Liked reply IDs
 
   // Editing state for main RSVP
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -39,9 +40,9 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
   const [editReplyText, setEditReplyText] = useState('');
   const [isSavingReply, setIsSavingReply] = useState(false);
 
-  const fetchRsvps = async () => {
+  const fetchRsvps = async (force = false) => {
     try {
-      const data = await dbService.getRSVPs();
+      const data = await dbService.getRSVPs(force);
       setRsvps(data);
       setError(null);
     } catch (err: any) {
@@ -53,8 +54,9 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
   };
 
   useEffect(() => {
-    fetchRsvps();
+    fetchRsvps(refreshTrigger > 0);
     // Load own RSVP IDs, Reply IDs, and Liked IDs from localStorage
+
     try {
       const stored = JSON.parse(localStorage.getItem('my_rsvp_ids') || '[]');
       setMyRsvpIds(stored);
@@ -62,6 +64,8 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
       setMyReplyIds(storedReplies);
       const storedLikes = JSON.parse(localStorage.getItem('my_liked_ids') || '[]');
       setMyLikedIds(storedLikes);
+      const storedReplyLikes = JSON.parse(localStorage.getItem('my_liked_reply_ids') || '[]');
+      setMyLikedReplyIds(storedReplyLikes);
     } catch (e) {
       console.error(e);
     }
@@ -144,6 +148,38 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
       await dbService.likeRSVP(id, action);
     } catch (err) {
       console.error("Like failed", err);
+    }
+  };
+
+  const handleLikeReply = async (rsvpId: string, replyId: string) => {
+    const hasLiked = myLikedReplyIds.includes(replyId);
+    const action = hasLiked ? 'unlike' : 'like';
+
+    try {
+      // Optimistic UI
+      setMyLikedReplyIds(prev => {
+        const next = hasLiked ? prev.filter(id => id !== replyId) : [...prev, replyId];
+        localStorage.setItem('my_liked_reply_ids', JSON.stringify(next));
+        return next;
+      });
+      setRsvps(prev => prev.map(r => {
+        if (r.id === rsvpId) {
+          return {
+            ...r,
+            replies: (r.replies || []).map(rep => {
+              if (rep.id === replyId) {
+                return { ...rep, likes: Math.max(0, (rep.likes || 0) + (hasLiked ? -1 : 1)) };
+              }
+              return rep;
+            })
+          };
+        }
+        return r;
+      }));
+
+      await dbService.likeReply(rsvpId, replyId, action);
+    } catch (err) {
+      console.error("Like reply failed", err);
     }
   };
 
@@ -494,8 +530,21 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
 
                                     <p className="text-xs text-slate-700 font-medium leading-relaxed">{reply.text}</p>
 
-                                    {/* Action to reply directly to this sub-comment */}
-                                    <div className="pt-0.5">
+                                    <div className="flex items-center justify-between gap-2 pt-1">
+                                      {/* Like button on reply */}
+                                      <button
+                                        onClick={() => handleLikeReply(rsvp.id, reply.id)}
+                                        className={`flex items-center gap-0.5 text-[10px] font-bold transition-colors py-0.5 px-1 rounded hover:bg-red-50 ${
+                                          myLikedReplyIds.includes(reply.id)
+                                            ? 'text-red-500 cursor-pointer'
+                                            : 'text-slate-400 hover:text-red-500 cursor-pointer'
+                                        }`}
+                                      >
+                                        <Heart className={`w-3 h-3 ${myLikedReplyIds.includes(reply.id) ? 'fill-red-500' : ''}`} />
+                                        <span>{reply.likes || 0}</span>
+                                      </button>
+
+                                      {/* Balas sub-comment */}
                                       <button
                                         onClick={() => startReply(rsvp.id, reply.name)}
                                         className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-[#0D5C53] cursor-pointer transition-colors"
@@ -503,6 +552,16 @@ export default function BukuTamu({ refreshTrigger }: BukuTamuProps) {
                                         <MessageCircle className="w-3 h-3" />
                                         <span>Balas {reply.name}</span>
                                       </button>
+
+                                      {/* Hapus balasan sendiri */}
+                                      {isMyReply && (
+                                        <button
+                                          onClick={() => handleDeleteReply(rsvp.id, reply.id)}
+                                          className="text-[10px] font-bold text-slate-400 hover:text-red-600 cursor-pointer transition-colors ml-auto"
+                                        >
+                                          Hapus
+                                        </button>
+                                      )}
                                     </div>
                                   </>
                                 )}

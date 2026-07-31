@@ -4,6 +4,7 @@ export interface RSVPReply {
   text: string;
   createdAt: string;
   replyToName?: string;
+  likes?: number;
 }
 
 export interface RSVP {

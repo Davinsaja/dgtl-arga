@@ -1,11 +1,31 @@
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Map, MapPin, QrCode, ExternalLink, Compass } from 'lucide-react';
 import QRCode from 'react-qr-code';
 import { siteConfig } from '../config/site';
 
+
 export default function GoogleMaps() {
+  const [shouldLoadMap, setShouldLoadMap] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadMap(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section id="location-section" className="relative section-padding bg-islamic-pattern overflow-hidden flex flex-col items-center">
+    <section id="location-section" ref={containerRef} className="relative section-padding bg-islamic-pattern overflow-hidden flex flex-col items-center">
       {/* Decorative vector arches */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-12 bg-[#0D5C53]/5 rounded-b-full filter blur-md pointer-events-none -z-10" />
 
@@ -36,19 +56,26 @@ export default function GoogleMaps() {
             className="lg:col-span-8 bg-[#FAFAF7]/95 border border-[#0D5C53]/15 p-3 rounded-3xl shadow-book flex flex-col gap-4 group"
           >
             {/* Interactive Embedded Iframe */}
-            <div className="relative w-full h-[240px] sm:h-[320px] md:h-[400px] rounded-2xl overflow-hidden shadow-inner border border-[#0D5C53]/5">
-              <iframe
-                title="Google Maps Location - Walimatul Khitan Arganta Humayun"
-                src={siteConfig.event.googleMapsEmbedSrc}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={true}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute inset-0"
-              />
+            <div className="relative w-full h-[240px] sm:h-[320px] md:h-[400px] rounded-2xl overflow-hidden shadow-inner border border-[#0D5C53]/5 bg-[#FAF6ED]">
+              {shouldLoadMap ? (
+                <iframe
+                  title="Google Maps Location - Walimatul Khitan Arganta Humayun"
+                  src={siteConfig.event.googleMapsEmbedSrc}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="absolute inset-0"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-xs text-[#0D5C53]/50 font-medium">
+                  Memuat Peta Lokasi...
+                </div>
+              )}
             </div>
+
 
             {/* Nav button */}
             <div className="px-2 pb-2">

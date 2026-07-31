@@ -12,19 +12,19 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Elegant loading mock simulation
+    // Smooth, low-main-thread loading simulation (25 updates instead of 100)
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
             setIsVisible(false);
-          }, 400); // Small delay for visual satisfaction
+          }, 300);
           return 100;
         }
-        return prev + 2;
+        return Math.min(100, prev + 4);
       });
-    }, 30);
+    }, 50);
 
     return () => clearInterval(interval);
   }, []);
@@ -61,14 +61,10 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
               <div className="absolute w-20 h-20 bg-[#0D5C53] rotate-45 rounded-xl shadow-book flex items-center justify-center transform transition-transform" />
               <div className="absolute w-20 h-20 bg-[#0D5C53] rounded-xl shadow-book flex items-center justify-center" />
               
-              {/* Inner glowing details */}
-              <motion.div 
-                className="absolute w-12 h-12 rounded-full border border-[#D4AF37] bg-[#FAFAF7] flex items-center justify-center z-10"
-                animate={{ scale: [0.95, 1.05, 0.95] }}
-                transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-              >
+              {/* Inner glowing details — CSS animate-pulse replaces Motion repeat:Infinity scale */}
+              <div className="absolute w-12 h-12 rounded-full border border-[#D4AF37] bg-[#FAFAF7] flex items-center justify-center z-10 animate-pulse">
                 <Star className="w-6 h-6 text-[#D4AF37] fill-[#D4AF37]/20" />
-              </motion.div>
+              </div>
 
               {/* Little sparkles around */}
               <Sparkles className="absolute -top-1 -right-1 w-5 h-5 text-[#D4AF37] animate-pulse" />
@@ -105,22 +101,18 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
               </motion.p>
             </div>
 
-            {/* Progress Bar Container */}
+            {/* Progress Bar Container — uses transform:scaleX to avoid Layout Reflow */}
             <div className="w-48 h-1.5 bg-[#0D5C53]/5 rounded-full overflow-hidden mt-6 relative border border-[#0D5C53]/5">
-              <motion.div
-                className="h-full bg-gradient-to-r from-[#0D5C53] to-[#D4AF37]"
-                style={{ width: `${progress}%` }}
+              <div
+                className="h-full w-full bg-gradient-to-r from-[#0D5C53] to-[#D4AF37] origin-left"
+                style={{ transform: `scaleX(${progress / 100})` }}
               />
             </div>
 
-            {/* Loading text percentage */}
-            <motion.span 
-              className="text-[10px] text-gray-500 font-bold uppercase tracking-widest font-mono"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-            >
+            {/* Loading text percentage — CSS animate-pulse replaces Motion repeat:Infinity opacity */}
+            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest font-mono animate-pulse">
               Memuat Undangan... {progress}%
-            </motion.span>
+            </span>
           </div>
         </motion.div>
       )}

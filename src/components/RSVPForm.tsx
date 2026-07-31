@@ -13,6 +13,8 @@ export default function RSVPForm({ onSuccess }: RSVPFormProps) {
   const [name, setName] = useState('');
   const [presence, setPresence] = useState<'hadir' | 'ragu' | 'tidak_hadir' | ''>('');
   const [wish, setWish] = useState('');
+  const [guestLocation, setGuestLocation] = useState<string | null>(null);
+  const [turutList, setTurutList] = useState<string[]>([]);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -21,15 +23,37 @@ export default function RSVPForm({ onSuccess }: RSVPFormProps) {
   React.useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
+
+      // Guest name from ?to=
       const toParam = params.get('to');
       if (toParam) {
         const decoded = decodeURIComponent(toParam).trim();
+        if (decoded) setName(decoded);
+      }
+
+      // Guest location from ?di= or ?lokasi= etc.
+      const locParam = params.get('di') || params.get('lokasi') || params.get('loc') || params.get('location');
+      if (locParam) {
+        const decoded = decodeURIComponent(locParam).trim();
         if (decoded) {
-          setName(decoded);
+          const formatted = decoded.toLowerCase().startsWith('di ') || decoded.toLowerCase().startsWith('di-')
+            ? decoded
+            : `di ${decoded}`;
+          setGuestLocation(formatted);
+        }
+      }
+
+      // Turut mengundang from ?turut= or ?tm= etc.
+      const turutParam = params.get('turut') || params.get('turut_mengundang') || params.get('tm');
+      if (turutParam) {
+        const decoded = decodeURIComponent(turutParam).trim();
+        if (decoded) {
+          const list = decoded.split(/[,|;\n]+/).map(s => s.trim()).filter(Boolean);
+          if (list.length > 0) setTurutList(list);
         }
       }
     } catch (e) {
-      console.error("Error reading 'to' parameter in RSVPForm:", e);
+      console.error("Error reading query parameters in RSVPForm:", e);
     }
   }, []);
 
@@ -96,6 +120,28 @@ export default function RSVPForm({ onSuccess }: RSVPFormProps) {
       {/* Form title */}
       <div className="text-center border-b border-[#0D5C53]/10 pb-5 mb-6 relative z-10">
         <h3 className="font-sans text-lg sm:text-xl font-bold text-[#0D5C53]">Kirim Ucapan &amp; Konfirmasi Kehadiran</h3>
+
+        {/* Guest info badge — kondisional, hanya tampil jika ada nama/lokasi */}
+        {(name || guestLocation || turutList.length > 0) && (
+          <div className="mt-3 flex flex-col items-center gap-1.5">
+            {/* Kepada & Lokasi */}
+            {name && (
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs">
+                <span className="text-[#0D5C53]/60 font-medium">Kepada:</span>
+                <span className="bg-[#0D5C53] text-[#FAFAF7] font-bold px-2.5 py-0.5 rounded-full">{name}</span>
+                {guestLocation && (
+                  <span className="text-[#AA771C] font-semibold italic">{guestLocation}</span>
+                )}
+              </div>
+            )}
+            {/* Turut Mengundang */}
+            {turutList.length > 0 && (
+              <div className="text-[10px] text-[#0D5C53]/60 font-medium italic">
+                Turut: {turutList.join(', ')}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {submitStatus === 'success' ? (

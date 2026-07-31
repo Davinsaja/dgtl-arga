@@ -1,25 +1,13 @@
-import { useState, useEffect } from 'react';
+import { memo } from 'react';
 import { motion } from 'motion/react';
 import { siteConfig } from '../config/site';
 
-export default function Hero() {
-  const [guestName, setGuestName] = useState("");
+interface HeroProps {
+  guestName: string;
+  guestLocation: string;
+}
 
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const toParam = params.get('to');
-      if (toParam) {
-        const decoded = decodeURIComponent(toParam).trim();
-        if (decoded) {
-          setGuestName(decoded);
-        }
-      }
-    } catch (e) {
-      console.error("Error reading 'to' parameter in Hero:", e);
-    }
-  }, []);
-
+const Hero = memo(function Hero({ guestName, guestLocation }: HeroProps) {
   const displayName = guestName.trim() || "Bapak/Ibu/Saudara/i";
 
   return (
@@ -45,11 +33,7 @@ export default function Hero() {
       {/* Hanging Decorative Islamic Lanterns (Left & Right) */}
       <div className="absolute top-10 left-1.5 sm:left-6 md:left-12 z-20 pointer-events-none flex flex-col items-center">
         <div className="w-[1px] h-10 sm:h-16 bg-gradient-to-b from-[#D4AF37] to-[#8C6D23]/60" />
-        <motion.div 
-          animate={{ rotate: [-3, 3, -3] }} 
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="w-5 sm:w-7 text-[#D4AF37] drop-shadow-md -mt-1"
-        >
+        <div className="w-5 sm:w-7 text-[#D4AF37] drop-shadow-md -mt-1 animate-floating">
           <svg viewBox="0 0 40 70" fill="currentColor">
             <circle cx="20" cy="5" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
             <path d="M12 12 L28 12 L24 20 L16 20 Z" />
@@ -59,16 +43,12 @@ export default function Hero() {
             <path d="M20 52 L20 62" stroke="currentColor" strokeWidth="2" />
             <circle cx="20" cy="64" r="2" />
           </svg>
-        </motion.div>
+        </div>
       </div>
 
       <div className="absolute top-10 right-1.5 sm:right-6 md:right-12 z-20 pointer-events-none flex flex-col items-center">
         <div className="w-[1px] h-14 sm:h-20 bg-gradient-to-b from-[#D4AF37] to-[#8C6D23]/60" />
-        <motion.div 
-          animate={{ rotate: [3, -3, 3] }} 
-          transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-4.5 sm:w-6 text-[#D4AF37] drop-shadow-md -mt-1"
-        >
+        <div className="w-4.5 sm:w-6 text-[#D4AF37] drop-shadow-md -mt-1 animate-floating-slow">
           <svg viewBox="0 0 40 70" fill="currentColor">
             <circle cx="20" cy="5" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
             <path d="M12 12 L28 12 L24 20 L16 20 Z" />
@@ -78,10 +58,10 @@ export default function Hero() {
             <path d="M20 52 L20 62" stroke="currentColor" strokeWidth="2" />
             <circle cx="20" cy="64" r="2" />
           </svg>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Main Content Container — Ringkas & Padat Agar Pas Sempurna 1 Layar Tanpa Scroll */}
+      {/* Main Content Container */}
       <div className="relative z-20 max-w-xl w-full flex flex-col items-center text-center space-y-2.5 sm:space-y-4 pt-[3.8rem] sm:pt-24 md:pt-26 flex-1 justify-evenly">
         
         {/* Intro Text & Opening Mosque Arch Plaque */}
@@ -118,11 +98,16 @@ export default function Hero() {
             <span className="text-[#D4AF37] font-extrabold underline decoration-dashed decoration-[#D4AF37]/50 underline-offset-4 px-1 py-0.5 bg-[#0D5C53]/5 rounded">
               {displayName}
             </span>{' '}
+            {guestLocation && (
+              <span className="text-[#0D5C53] font-bold italic">
+                ({guestLocation}){' '}
+              </span>
+            )}
             pada acara tasyakuran khitan anak kami:
           </p>
         </motion.div>
 
-        {/* UNIFIED LUXURY MOSQUE ARCH PHOTO FRAME (Skala Pas Presisi) */}
+        {/* UNIFIED LUXURY MOSQUE ARCH PHOTO FRAME */}
         <motion.div
           initial={{ opacity: 0, scale: 0.93 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -156,7 +141,7 @@ export default function Hero() {
                     style={{ objectPosition: siteConfig.child.objectPosition || 'center top' }}
                     referrerPolicy="no-referrer"
                     fetchPriority="high"
-                    decodes="async"
+                    decoding="async"
                   />
                   {/* Subtle Inner Ring Accent */}
                   <div className="absolute inset-0 rounded-t-[88px] sm:rounded-t-[118px] border border-[#D4AF37]/40 pointer-events-none" />
@@ -227,5 +212,6 @@ export default function Hero() {
       </div>
     </section>
   );
-}
+});
 
+export default Hero;

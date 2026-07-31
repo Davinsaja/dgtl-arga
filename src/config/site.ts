@@ -42,6 +42,7 @@ export interface SiteConfig {
     googleMapsEmbedSrc: string;
     whatsappRsvp: string;
     invitingFamily: string;
+    turutMengundang?: string[] | string;
   };
   ayat: {
     arabic: string;
@@ -80,7 +81,7 @@ export const siteConfig: SiteConfig = {
     grade: "Kelas 5 SD",
     fatherName: "Sarif Imron Wakhidin",
     motherName: "Riawati",
-    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/profilgan.webp",
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/newvin/profile.webp",
     objectPosition: "center top"
   },
   event: {
@@ -101,7 +102,8 @@ export const siteConfig: SiteConfig = {
     // Premium custom Google Maps embed src tailored to the coordinate for Dusun II Pegandekan, Purbalingga
     googleMapsEmbedSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.124614217112!2d109.3887556!3d-7.451458999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6559d80dffeb4d%3A0xe7f920202ba4df7f!2sDusun%20II%20Pegandekan%2C%20Kemangkon%2C%20Purbalingga!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid",
     whatsappRsvp: "081944090188",
-    invitingFamily: "Bapak Sarif Imron Wakhidin dan Keluarga"
+    invitingFamily: "Bapak Sarif Imron Wakhidin dan Keluarga",
+    turutMengundang: [] // Kosongkan atau isi contoh: ["Bpk. Kakek / Nenek", "Segenap Tamu Kehormatan"]
   },
   ayat: {
     arabic: "رَبِّ هَبْ لِي مِنَ الصَّالِحِينَ",
@@ -124,17 +126,17 @@ export const siteConfig: SiteConfig = {
   },
   gallery: {
     images: [
-      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img1.webp", position: "center top" },
-      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img2.webp", position: "center top" },
-      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img3.webp", position: "center top" },
-      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/img4.webp", position: "center top" }
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/newvin/img1.webp", position: "center top" },
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/newvin/img2.webp", position: "center top" },
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/newvin/img3.webp", position: "center top" },
+      { url: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/newvin/img4.webp", position: "center top" }
     ]
   },
   cover: {
     label: "Undangan",
     title: "TASYAKURAN KHITAN",
     buttonText: "Buka Undangan",
-    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/kompres%20file/covergan.webp",
+    photo: "https://awpecqmfeuyejveecdmy.supabase.co/storage/v1/object/public/newvin/cover.webp",
     objectPosition: "62% 15%"
   },
   theme: {

@@ -11,9 +11,18 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 2500): Pr
   ]);
 }
 
+let cachedRSVPs: RSVP[] | null = null;
+let lastCacheTime = 0;
+const CACHE_TTL_MS = 15000; // 15 seconds cache
+
 export const dbService = {
-  // 1. Get All RSVPs
-  async getRSVPs(): Promise<RSVP[]> {
+  // 1. Get All RSVPs (with caching)
+  async getRSVPs(forceRefresh = false): Promise<RSVP[]> {
+    const now = Date.now();
+    if (!forceRefresh && cachedRSVPs && (now - lastCacheTime < CACHE_TTL_MS)) {
+      return cachedRSVPs;
+    }
+
     if (isFirebaseEnabled) {
       try {
         const db = await getFirestoreDb();
@@ -36,6 +45,8 @@ export const dbService = {
               replies: data.replies || []
             });
           });
+          cachedRSVPs = rsvps;
+          lastCacheTime = Date.now();
           return rsvps;
         }
       } catch (err) {
@@ -47,10 +58,14 @@ export const dbService = {
     const res = await fetch('/api/rsvps');
     const json = await res.json();
     if (json.success) {
-      return json.data || [];
+      const data = json.data || [];
+      cachedRSVPs = data;
+      lastCacheTime = Date.now();
+      return data;
     }
     throw new Error(json.error || "Gagal memuat rsvp");
   },
+
 
   // 2. Add New RSVP
   async addRSVP(name: string, presence: 'hadir' | 'ragu' | 'tidak_hadir', wish: string): Promise<RSVP> {
@@ -58,6 +73,7 @@ export const dbService = {
     const cleanWish = wish.trim();
     const createdAt = new Date().toISOString();
 
+    cachedRSVPs = null;
     if (isFirebaseEnabled) {
       try {
         const db = await getFirestoreDb();
@@ -86,6 +102,7 @@ export const dbService = {
         console.error("Firebase addRSVP error:", err);
       }
     }
+
 
     // Fallback to Local API
     const response = await fetch('/api/rsvps', {
@@ -314,5 +331,37 @@ export const dbService = {
     if (!result.success) {
       throw new Error(result.error || "Gagal menghapus balasan");
     }
+  },
+
+  // 9. Like / Unlike a Reply
+  async likeReply(rsvpId: string, replyId: string, action: 'like' | 'unlike'): Promise<void> {
+    if (isFirebaseEnabled) {
+      try {
+        const db = await getFirestoreDb();
+        if (db) {
+          const { doc, getDoc, updateDoc } = await import('firebase/firestore');
+          const docRef = doc(db, 'rsvps', rsvpId);
+          const docSnap = await withTimeout(getDoc(docRef));
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const replies: RSVPReply[] = data.replies || [];
+            const updated = replies.map(r => {
+              if (r.id === replyId) {
+                const currentLikes = r.likes || 0;
+                return { ...r, likes: Math.max(0, currentLikes + (action === 'unlike' ? -1 : 1)) };
+              }
+              return r;
+            });
+            await withTimeout(updateDoc(docRef, { replies: updated }));
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Firebase likeReply error:", err);
+      }
+    }
+
+    // Fallback: no local API for reply like, silently succeed
+    console.log(`likeReply fallback: ${action} on reply ${replyId}`);
   }
 };

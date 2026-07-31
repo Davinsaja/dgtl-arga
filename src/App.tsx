@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, Sparkles } from 'lucide-react';
 
@@ -17,17 +17,33 @@ const GiftComponent = lazy(() => import('./components/Gift'));
 const RSVPForm = lazy(() => import('./components/RSVPForm'));
 const BukuTamu = lazy(() => import('./components/BukuTamu'));
 
+const SectionLoader = () => (
+  <div className="py-6 text-center text-xs text-[#0D5C53]/40 font-medium">Memuat...</div>
+);
+
 export default function App() {
   const [showSplash, setShowSplash] = useState(false);
   const [opened, setOpened] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [guestName, setGuestName] = useState("Bapak/Ibu/Saudara/i");
+  const [guestLocation, setGuestLocation] = useState<string>("di Tempat");
+  const [turutMengundangList, setTurutMengundangList] = useState<string[]>([]);
+  
+  // Initialize music playback based on previous manual pause flag
+  useEffect(() => {
+    const paused = localStorage.getItem('audioUserPaused') === 'true';
+    if (!paused) {
+      setIsMusicPlaying(true);
+    }
+  }, []);
 
-  // Read guest name 'to' parameter from URL query string
+  // Read guest name 'to', location 'di', & 'turut' parameter from URL query string or siteConfig
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
+      
+      // Guest Name
       const toParam = params.get('to');
       if (toParam) {
         const decoded = decodeURIComponent(toParam).trim();
@@ -35,8 +51,38 @@ export default function App() {
           setGuestName(decoded);
         }
       }
+
+      // Guest Location
+      const locParam = params.get('di') || params.get('lokasi') || params.get('loc') || params.get('location');
+      if (locParam) {
+        const decodedLoc = decodeURIComponent(locParam).trim();
+        if (decodedLoc.length > 0) {
+          const formattedLoc = decodedLoc.toLowerCase().startsWith('di ') || decodedLoc.toLowerCase().startsWith('di-')
+            ? decodedLoc
+            : `di ${decodedLoc}`;
+          setGuestLocation(formattedLoc);
+        }
+      }
+
+      // Turut Mengundang
+      const turutParam = params.get('turut') || params.get('turut_mengundang') || params.get('tm');
+      if (turutParam) {
+        const decoded = decodeURIComponent(turutParam).trim();
+        if (decoded.length > 0) {
+          const parsedItems = decoded.split(/[\n,;|]+/).map(item => item.trim()).filter(Boolean);
+          setTurutMengundangList(parsedItems);
+        }
+      } else if (siteConfig.event.turutMengundang) {
+        const raw = siteConfig.event.turutMengundang;
+        if (Array.isArray(raw)) {
+          setTurutMengundangList(raw.map(item => item.trim()).filter(Boolean));
+        } else if (typeof raw === 'string' && raw.trim().length > 0) {
+          const parsedItems = raw.split(/[\n,;|]+/).map(item => item.trim()).filter(Boolean);
+          setTurutMengundangList(parsedItems);
+        }
+      }
     } catch (e) {
-      console.error("Error reading 'to' query parameter in App:", e);
+      console.error("Error reading URL parameters in App:", e);
     }
   }, []);
 
@@ -47,19 +93,18 @@ export default function App() {
     }
   }, [opened]);
 
-  const handleOpenInvitation = () => {
+  const handleOpenInvitation = useCallback(() => {
     setOpened(true);
     setIsMusicPlaying(true);
-  };
+  }, []);
 
-  const handleSplashComplete = () => {
+  const handleSplashComplete = useCallback(() => {
     setShowSplash(false);
-  };
+  }, []);
 
-  const handleRSVPSuccess = () => {
-    // Increment count to trigger a live re-fetch in BukuTamu component
+  const handleRSVPSuccess = useCallback(() => {
     setRefreshTrigger(prev => prev + 1);
-  };
+  }, []);
 
   return (
     <div className="relative min-h-screen bg-islamic-pattern text-[#0D5C53] selection:bg-[#0D5C53]/10 selection:text-[#0D5C53] overflow-x-hidden flex flex-col items-center">
@@ -78,10 +123,10 @@ export default function App() {
               key="cover"
               initial={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: '-100%', transition: { duration: 0.45, ease: [0.4, 0, 0.2, 1] } }}
-              className="fixed inset-0 z-40 flex justify-center bg-[#E8E4DA] overflow-hidden"
+              className="fixed inset-0 z-40 flex justify-center bg-[#F6F0E2] sm:bg-[#E8E4DA] overflow-hidden w-full max-w-full"
             >
               <div className="invitation-shell w-full h-full">
-                <Cover onOpen={handleOpenInvitation} />
+                <Cover onOpen={handleOpenInvitation} guestName={guestName} guestLocation={guestLocation} />
               </div>
             </motion.div>
           ) : (
@@ -94,17 +139,34 @@ export default function App() {
               className="invitation-shell w-full flex flex-col min-h-screen bg-[#F6F1E6]"
             >
               {/* Sections Flow */}
-              <Hero />
+              <Hero guestName={guestName} guestLocation={guestLocation} />
               
-              <Suspense fallback={<div className="py-8 text-center text-xs text-[#0D5C53]/50 font-medium">Memuat...</div>}>
+              <Suspense fallback={<SectionLoader />}>
                 <AcaraHighlight />
-                <Countdown />
-                <DetailAcara />
-                <GoogleMaps />
-                <Gallery />
-                <GiftComponent />
+              </Suspense>
 
-                {/* Combined RSVP & Wishes section */}
+              <Suspense fallback={<SectionLoader />}>
+                <Countdown />
+              </Suspense>
+
+              <Suspense fallback={<SectionLoader />}>
+                <DetailAcara />
+              </Suspense>
+
+              <Suspense fallback={<SectionLoader />}>
+                <GoogleMaps />
+              </Suspense>
+
+              <Suspense fallback={<SectionLoader />}>
+                <Gallery />
+              </Suspense>
+
+              <Suspense fallback={<SectionLoader />}>
+                <GiftComponent />
+              </Suspense>
+
+              {/* Combined RSVP & Wishes section */}
+              <Suspense fallback={<SectionLoader />}>
                 <section id="rsvp-wishes-section" className="relative section-padding bg-islamic-pattern border-t border-[#0D5C53]/10 overflow-hidden flex flex-col items-center">
                   {/* Visual Glow */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#0D5C53]/5 rounded-full filter blur-3xl pointer-events-none" />
@@ -118,7 +180,7 @@ export default function App() {
                       </p>
                     </div>
 
-                    {/* Responsive Grid: RSVP form + Guest Book list */}
+                    {/* Responsive Grid: RSVP form + Guest Book list side-by-side on Laptop/PC */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full items-start">
                       <RSVPForm onSuccess={handleRSVPSuccess} />
                       <BukuTamu refreshTrigger={refreshTrigger} />
@@ -127,23 +189,17 @@ export default function App() {
                 </section>
               </Suspense>
 
+
               {/* Closing Statement & Footer */}
               <section id="closing-section" className="relative pt-14 sm:pt-18 md:pt-20 pb-0 bg-islamic-pattern overflow-hidden flex flex-col items-center text-center border-t border-[#0D5C53]/10">
                 <div className="max-w-xl w-full flex flex-col items-center gap-8 relative z-10 px-4">
                   {/* Mandala ornament */}
-                  <motion.div 
-                    animate={{ y: [0, -4, 0] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative w-16 h-16 sm:w-18 sm:h-18 flex items-center justify-center"
-                  >
-                    <div className="absolute inset-0 bg-[#0D5C53] rotate-45 rounded-lg shadow-md border-2 border-[#D4AF37]/50" />
-                    <motion.div
-                      animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <Star className="w-6 h-6 text-[#D4AF37] fill-[#D4AF37]/30 z-10" />
-                    </motion.div>
-                  </motion.div>
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center animate-floating">
+                    <div className="absolute inset-0 bg-[#0D5C53] rotate-45 rounded-xl shadow-md border-2 border-[#D4AF37]" />
+                    <div className="relative z-10 flex items-center justify-center">
+                      <Star className="w-6 h-6 text-[#D4AF37] fill-[#D4AF37]" />
+                    </div>
+                  </div>
 
                   {/* Closing Text */}
                   <div className="space-y-3 max-w-md">
@@ -152,6 +208,11 @@ export default function App() {
                       <span className="text-[#D4AF37] font-extrabold underline decoration-dashed decoration-[#D4AF37]/50 underline-offset-4 px-1.5 py-0.5 bg-[#0D5C53]/5 rounded">
                         {guestName}
                       </span>{' '}
+                      {guestLocation && (
+                        <span className="text-[#0D5C53] font-bold italic">
+                          ({guestLocation}){' '}
+                        </span>
+                      )}
                       berkenan hadir memberikan doa restu.
                     </p>
                     <p className="text-xs sm:text-sm text-gray-500 font-medium italic">
@@ -159,11 +220,46 @@ export default function App() {
                     </p>
                   </div>
 
-                  {/* Closing Salam */}
-                  <div className="space-y-2">
+                  {/* Closing Salam & Host Info */}
+                  <div className="space-y-3 w-full flex flex-col items-center">
                     <h3 className="text-xs sm:text-sm font-extrabold tracking-[0.2em] text-[#D4AF37] uppercase">Wassalamu’alaikum Wr. Wb.</h3>
-                    <p className="text-[11px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider">Keluarga Besar:</p>
-                    <h4 className="font-serif text-lg sm:text-xl md:text-2xl font-black text-[#0D5C53] tracking-wide">{siteConfig.event.invitingFamily}</h4>
+                    
+                    <div className="pt-2 flex flex-col items-center gap-1">
+                      <p className="text-[11px] sm:text-xs text-gray-400 font-bold uppercase tracking-widest">Kami yang berbahagia,</p>
+                      <p className="text-xs font-extrabold text-[#D4AF37] uppercase tracking-wider">Keluarga Besar:</p>
+                      <h4 className="font-serif text-lg sm:text-xl md:text-2xl font-black text-[#0D5C53] tracking-wide">{siteConfig.event.invitingFamily}</h4>
+                    </div>
+
+                    {/* Conditional Turut Mengundang Section — Luxury Plakat Card */}
+                    {turutMengundangList.length > 0 && (
+                      <div className="mt-6 relative w-full max-w-sm mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#FAF5EA] via-[#F4EBD9] to-[#FAF5EA] border-2 border-[#D4AF37]/50 shadow-[0_6px_20px_rgba(212,175,55,0.18)] text-center overflow-hidden">
+                        {/* Delicate Inner Foil Border */}
+                        <div className="absolute inset-1.5 rounded-xl border border-[#D4AF37]/35 pointer-events-none" />
+
+                        {/* Header Ornament */}
+                        <div className="relative z-10 flex items-center justify-center gap-2 mb-1.5">
+                          <span className="text-[#D4AF37] text-xs">❖</span>
+                          <h5 className="font-serif text-xs sm:text-sm font-bold tracking-[0.2em] text-[#0D5C53] uppercase">
+                            Turut Mengundang
+                          </h5>
+                          <span className="text-[#D4AF37] text-xs">❖</span>
+                        </div>
+
+                        {/* Gold Gradient Line */}
+                        <div className="relative z-10 w-24 h-0.5 mx-auto mb-3 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+
+                        {/* List of Names */}
+                        <div className="relative z-10 space-y-1.5">
+                          {turutMengundangList.map((name, index) => (
+                            <div key={index} className="flex items-center justify-center gap-2 text-xs sm:text-sm font-serif font-semibold text-[#0D5C53]">
+                              <span className="text-[#D4AF37] text-[9px]">✦</span>
+                              <span>{name}</span>
+                              <span className="text-[#D4AF37] text-[9px]">✦</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -178,57 +274,43 @@ export default function App() {
                       <path d="M0,1 C20,9 35,17 50,17 C65,17 80,9 100,1" fill="none" stroke="#D4AF37" strokeWidth="0.1" opacity="0.5" />
                     </svg>
 
-                    {/* Hanging Ornaments with smooth gentle pendulum animations */}
-                    <div className="absolute inset-x-0 top-[10px] sm:top-[15px] flex justify-between px-8 sm:px-16 md:px-24 pointer-events-none z-20">
-                      {/* Ornament Left: Hanging Islamic Lantern */}
-                      <motion.div 
-                        animate={{ rotate: [-2, 2, -2] }}
-                        transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="origin-top flex flex-col items-center"
-                      >
-                        <div className="w-[1.5px] h-8 sm:h-12 bg-[#D4AF37]/65" />
-                        <svg viewBox="0 0 100 120" className="w-6 h-7 sm:w-8 sm:h-9 text-[#D4AF37] fill-current drop-shadow-md">
+                    {/* Hanging Ornaments — Perfectly Symmetrical on all screens */}
+                    <div className="absolute inset-x-0 top-[10px] sm:top-[15px] flex justify-between px-4 sm:px-12 md:px-20 pointer-events-none z-20">
+                      {/* Ornament Left Outer: Hanging Islamic Lantern */}
+                      <div className="origin-top flex flex-col items-center animate-floating">
+                        <div className="w-[1.5px] h-7 sm:h-12 bg-[#D4AF37]/65" />
+                        <svg viewBox="0 0 100 120" className="w-5 h-6 sm:w-8 sm:h-9 text-[#D4AF37] fill-current drop-shadow-md">
                           <path d="M50,10 L30,30 L30,70 L50,90 L70,70 L70,30 Z" stroke="#D4AF37" strokeWidth="5" />
                           <circle cx="50" cy="50" r="12" fill="#0D5C53" />
                           <polygon points="50,30 55,45 70,50 55,55 50,70 45,55 30,50 45,45" fill="#D4AF37" />
                         </svg>
-                      </motion.div>
+                      </div>
 
-                      {/* Ornament Left Inner: Swaying Star */}
-                      <motion.div 
-                        animate={{ rotate: [2, -2, 2] }}
-                        transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                        className="origin-top flex flex-col items-center hidden sm:flex"
-                      >
-                        <div className="w-[1px] h-12 sm:h-16 bg-[#D4AF37]/50" />
-                        <svg viewBox="0 0 100 100" className="w-5 h-5 text-[#D4AF37] fill-current drop-shadow-sm">
+                      {/* Ornament Left Inner: Hanging Gold Star */}
+                      <div className="origin-top flex flex-col items-center animate-floating-slow">
+                        <div className="w-[1px] h-9 sm:h-16 bg-[#D4AF37]/50" />
+                        <svg viewBox="0 0 100 100" className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] fill-current drop-shadow-sm">
                           <polygon points="50,0 65,35 100,50 65,65 50,100 35,65 0,50 35,35" />
                         </svg>
-                      </motion.div>
+                      </div>
 
-                      {/* Ornament Right Inner: Crescent Moon */}
-                      <motion.div 
-                        animate={{ rotate: [-2, 2, -2] }}
-                        transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-                        className="origin-top flex flex-col items-center hidden sm:flex"
-                      >
-                        <div className="w-[1px] h-12 sm:h-16 bg-[#D4AF37]/50" />
-                        <svg viewBox="0 0 100 100" className="w-5 h-5 text-[#D4AF37] fill-current drop-shadow-sm">
-                          <path d="M40 10 A 30 30 0 1 0 70 80 A 35 35 0 1 1 40 10 Z" />
+                      {/* Ornament Right Inner: Hanging Gold Star */}
+                      <div className="origin-top flex flex-col items-center animate-floating-slow">
+                        <div className="w-[1px] h-9 sm:h-16 bg-[#D4AF37]/50" />
+                        <svg viewBox="0 0 100 100" className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] fill-current drop-shadow-sm">
+                          <polygon points="50,0 65,35 100,50 65,65 50,100 35,65 0,50 35,35" />
                         </svg>
-                      </motion.div>
+                      </div>
 
-                      {/* Ornament Right: Decorative Ketupat */}
-                      <motion.div 
-                        animate={{ rotate: [2.5, -2.5, 2.5] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="origin-top flex flex-col items-center"
-                      >
-                        <div className="w-[1.5px] h-8 sm:h-12 bg-[#D4AF37]/65" />
-                        <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-[#D4AF37] to-[#B38F24] border border-white/20 rotate-45 shadow-md flex items-center justify-center">
-                          <div className="w-2.5 h-2.5 bg-[#0D5C53] border border-[#D4AF37]" />
-                        </div>
-                      </motion.div>
+                      {/* Ornament Right Outer: Hanging Islamic Lantern */}
+                      <div className="origin-top flex flex-col items-center animate-floating">
+                        <div className="w-[1.5px] h-7 sm:h-12 bg-[#D4AF37]/65" />
+                        <svg viewBox="0 0 100 120" className="w-5 h-6 sm:w-8 sm:h-9 text-[#D4AF37] fill-current drop-shadow-md">
+                          <path d="M50,10 L30,30 L30,70 L50,90 L70,70 L70,30 Z" stroke="#D4AF37" strokeWidth="5" />
+                          <circle cx="50" cy="50" r="12" fill="#0D5C53" />
+                          <polygon points="50,30 55,45 70,50 55,55 50,70 45,55 30,50 45,45" fill="#D4AF37" />
+                        </svg>
+                      </div>
                     </div>
 
                     {/* The Rotated Diamond Star Centerpiece Emblem */}
@@ -242,21 +324,13 @@ export default function App() {
                   {/* Dark Green Solid Footer Base Block */}
                   <footer className="w-full bg-[#0D5C53] text-[#FAF6ED] pt-10 pb-8 px-4 sm:px-6 safe-bottom flex flex-col items-center relative z-10 select-none overflow-hidden">
                     
-                    {/* Floating ambient sparkles behind footer content */}
-                    <motion.div 
-                      animate={{ y: [0, -4, 0], opacity: [0.2, 0.5, 0.2] }} 
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} 
-                      className="absolute top-3 left-[12%] pointer-events-none"
-                    >
+                    {/* Floating ambient sparkles — CSS animation (GPU) replaces Motion repeat:Infinity */}
+                    <span className="absolute top-3 left-[12%] pointer-events-none animate-floating opacity-40">
                       <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-                    </motion.div>
-                    <motion.div 
-                      animate={{ y: [0, -3, 0], opacity: [0.15, 0.4, 0.15] }} 
-                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }} 
-                      className="absolute bottom-4 right-[12%] pointer-events-none"
-                    >
+                    </span>
+                    <span className="absolute bottom-4 right-[12%] pointer-events-none animate-floating-slow opacity-30">
                       <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
-                    </motion.div>
+                    </span>
 
                     {/* Footer Contents */}
                     <div className="max-w-md w-full flex flex-col items-center space-y-3 relative z-20 text-center">

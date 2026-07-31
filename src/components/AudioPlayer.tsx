@@ -131,9 +131,10 @@ export default function AudioPlayer({ isPlaying, setIsPlaying }: AudioPlayerProp
         ref={audioRef}
         src={currentSrc}
         loop
-        preload="auto"
+        preload="metadata"
         onError={handleAudioError}
       />
+
 
       <div className="relative group">
         {/* Subtle background pulse aura when playing */}

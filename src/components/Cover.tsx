@@ -1,14 +1,16 @@
-import { useState, useEffect, useId } from 'react';
+import { memo, useId } from 'react';
 import { motion } from 'motion/react';
 import { siteConfig } from '../config/site';
 import { CornerFiligree } from './PremiumOrnaments';
 
 interface CoverProps {
   onOpen: () => void;
+  guestName: string;
+  guestLocation: string;
 }
 
 /** Ornamen sudut — setengah lingkaran geometris seperti referensi */
-function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
+const CornerCircleOrnament = memo(function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' }) {
   const uid = useId().replace(/:/g, '');
   const posClass =
     corner === 'tl'
@@ -70,10 +72,10 @@ function CornerCircleOrnament({ corner }: { corner: 'tl' | 'tr' | 'bl' | 'br' })
       </g>
     </svg>
   );
-}
+});
 
 /** Gerbang masjid — header hijau + lengkung mihrab */
-function MosqueGateHeader() {
+const MosqueGateHeader = memo(function MosqueGateHeader() {
   return (
     <div className="relative w-full shrink-0 h-[120px] xs:h-[135px] sm:h-[125px]">
       {/* Background hijau + garis pinstripe */}
@@ -97,7 +99,7 @@ function MosqueGateHeader() {
           </svg>
         </div>
 
-        {/* Teks Undangan di dalam header hijau agar kontras tinggi & tidak tertimpa lengkungan */}
+        {/* Teks Undangan di dalam header hijau */}
         <p className="relative z-10 font-serif italic text-xl sm:text-2xl text-[#FCF6BA] drop-shadow-md leading-none mt-1 tracking-wide">
           {siteConfig.cover.label}
         </p>
@@ -107,7 +109,7 @@ function MosqueGateHeader() {
       <CornerCircleOrnament corner="tl" />
       <CornerCircleOrnament corner="tr" />
 
-      {/* Lengkung mihrab — badan krem hangat naik ke header */}
+      {/* Lengkung mihrab */}
       <svg
         viewBox="0 0 400 90"
         preserveAspectRatio="none"
@@ -138,9 +140,9 @@ function MosqueGateHeader() {
       </div>
     </div>
   );
-}
+});
 
-function BottomStarRow() {
+const BottomStarRow = memo(function BottomStarRow() {
   return (
     <div className="flex items-center justify-center gap-1.5 sm:gap-2 py-2">
       {Array.from({ length: 9 }).map((_, i) => (
@@ -157,36 +159,16 @@ function BottomStarRow() {
       ))}
     </div>
   );
-}
+});
 
-export default function Cover({ onOpen }: CoverProps) {
-  const [guestName, setGuestName] = useState('Bapak/Ibu/Saudara/i');
-
-  useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const toParam = params.get('to');
-      if (toParam) {
-        const decoded = decodeURIComponent(toParam)
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .trim();
-        if (decoded.length > 0) {
-          setGuestName(decoded);
-        }
-      }
-    } catch (e) {
-      console.error("Error reading 'to' query parameter:", e);
-    }
-  }, []);
-
+const Cover = memo(function Cover({ onOpen, guestName, guestLocation }: CoverProps) {
   return (
     <div
       id="envelope-cover"
-      className="relative flex h-[100dvh] min-h-[100dvh] w-full items-center justify-center bg-[#E3DAC9] safe-top safe-bottom overflow-hidden p-0 sm:p-4"
+      className="relative flex h-[100dvh] min-h-[100dvh] w-full items-center justify-center bg-[#F6F0E2] sm:bg-[#E3DAC9] safe-top safe-bottom overflow-y-auto no-scrollbar overflow-x-hidden p-0 sm:p-4"
     >
-      {/* Kartu undangan — Tekstur kertas krem hangat premium (tidak putih polos) */}
-      <div className="relative flex flex-col w-full max-w-[420px] h-full max-h-[100dvh] sm:max-h-[820px] sm:h-[94dvh] sm:rounded-3xl sm:shadow-[0_20px_60px_rgba(13,92,83,0.25)] overflow-hidden bg-[#F6F0E2] justify-between shadow-[inset_0_0_35px_rgba(212,175,55,0.18)] border border-[#D4AF37]/30">
+      {/* Kartu undangan */}
+      <div className="relative flex flex-col w-full sm:max-w-[440px] h-full max-h-[100dvh] sm:max-h-[820px] sm:h-[94dvh] sm:rounded-3xl sm:shadow-[0_20px_60px_rgba(13,92,83,0.25)] overflow-y-auto no-scrollbar overflow-x-hidden bg-[#F6F0E2] justify-between shadow-[inset_0_0_35px_rgba(212,175,55,0.18)] border-0 sm:border border-[#D4AF37]/30 my-auto">
 
         {/* Outer Gold Foil Double Line Frame inside Card */}
         <div className="absolute inset-2 sm:inset-3 rounded-2xl border border-[#D4AF37]/35 pointer-events-none z-10" />
@@ -203,8 +185,8 @@ export default function Cover({ onOpen }: CoverProps) {
         {/* Gerbang masjid header */}
         <MosqueGateHeader />
 
-        {/* Konten utama — disetting flex-1 & justify-evenly agar pas sempurna tanpa scroll di layar hp apapun */}
-        <div className="relative z-20 flex flex-1 flex-col items-center justify-evenly text-center px-4 py-1 overflow-hidden">
+        {/* Konten utama */}
+        <div className="relative z-20 flex flex-1 flex-col items-center justify-evenly text-center px-4 py-1.5 min-h-max">
           
           {/* Subtitle TASYAKURAN KHITAN */}
           <div className="flex flex-col items-center gap-1">
@@ -218,20 +200,20 @@ export default function Cover({ onOpen }: CoverProps) {
             <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
           </div>
 
-          {/* Frame Foto Mewah Islami — Ukuran Lebih Besar & Bingkai Emas Berlapis */}
-          <div className="relative my-2 xs:my-3 shrink-0 flex items-center justify-center">
+          {/* Frame Foto Mewah Islami */}
+          <div className="relative my-1.5 xs:my-2 shrink-0 flex items-center justify-center">
             {/* Outer Golden Glow & Halo Ornament */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#D4AF37]/30 via-[#FBF5B7]/40 to-[#AA771C]/20 blur-md scale-110 animate-pulse pointer-events-none" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#D4AF37]/25 via-[#FBF5B7]/35 to-[#AA771C]/15 scale-105 pointer-events-none" />
 
-            {/* Rotating Decorative Outer Gold Ring / Starburst dots */}
+            {/* Rotating Decorative Outer Gold Ring */}
             <div className="absolute -inset-3.5 sm:-inset-4 rounded-full border border-dashed border-[#D4AF37]/60 pointer-events-none animate-[spin_40s_linear_infinite]" />
 
             {/* Outer Metallic Gold Border Frame */}
-            <div className="relative rounded-full p-[4.5px] bg-gradient-to-b from-[#FBF5B7] via-[#D4AF37] to-[#8C6D23] shadow-[0_12px_35px_rgba(212,175,55,0.45),0_4px_15px_rgba(13,92,83,0.35)]">
+            <div className="relative rounded-full p-[4px] bg-gradient-to-b from-[#FBF5B7] via-[#D4AF37] to-[#8C6D23] shadow-[0_12px_35px_rgba(212,175,55,0.45),0_4px_15px_rgba(13,92,83,0.35)]">
               {/* Middle Emerald Inset */}
-              <div className="rounded-full p-[3px] bg-[#0D5C53]">
+              <div className="rounded-full p-[2.5px] bg-[#0D5C53]">
                 {/* Inner Ivory Frame Ring */}
-                <div className="w-[160px] h-[160px] xs:w-[185px] xs:h-[185px] sm:w-[170px] sm:h-[170px] rounded-full overflow-hidden bg-[#FAF5EA] border-2 border-[#FAF5EA] relative shadow-inner">
+                <div className="w-[150px] h-[150px] xs:w-[170px] xs:h-[170px] sm:w-[160px] sm:h-[160px] rounded-full overflow-hidden bg-[#FAF5EA] border-2 border-[#FAF5EA] relative shadow-inner">
                   <img
                     src={siteConfig.cover.photo}
                     alt={siteConfig.child.fullName}
@@ -240,7 +222,7 @@ export default function Cover({ onOpen }: CoverProps) {
                     referrerPolicy="no-referrer"
                     loading="eager"
                     fetchPriority="high"
-                    decodes="async"
+                    decoding="async"
                   />
                   {/* Subtle Inner Ring Highlight */}
                   <div className="absolute inset-0 rounded-full border border-[#D4AF37]/40 pointer-events-none" />
@@ -259,15 +241,20 @@ export default function Cover({ onOpen }: CoverProps) {
             {siteConfig.child.fullName}
           </h2>
 
-          {/* Plakat Tamu / Kepada Yth (Tampilan Kertas Emas Mewah) */}
+          {/* Plakat Tamu / Kepada Yth */}
           <div className="flex flex-col items-center gap-1 w-full max-w-[290px] py-3 px-4 rounded-xl bg-[#FAF5EA] border-2 border-[#D4AF37]/50 shadow-[0_4px_14px_rgba(212,175,55,0.16)] relative">
             <p className="font-serif text-xs sm:text-sm font-bold text-[#0D5C53] mt-0.5">Kepada Yth;</p>
             <p className="font-serif text-sm xs:text-base sm:text-base font-black text-[#AA771C] leading-snug break-words">
               {guestName}
             </p>
+            {guestLocation && (
+              <p className="font-serif text-xs sm:text-sm font-bold text-[#0D5C53]/90 italic tracking-wide mt-0.5">
+                {guestLocation}
+              </p>
+            )}
           </div>
 
-          {/* Tombol Buka Undangan — Hijau Emerald & Emas Mewah */}
+          {/* Tombol Buka Undangan */}
           <motion.button
             id="btn-open-envelope"
             onClick={onOpen}
@@ -292,5 +279,6 @@ export default function Cover({ onOpen }: CoverProps) {
       </div>
     </div>
   );
-}
+});
 
+export default Cover;
