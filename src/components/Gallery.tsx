@@ -106,26 +106,6 @@ export default function Gallery() {
                 className="fixed inset-0 w-screen h-screen z-[999999] bg-black/98 flex flex-col items-center justify-center p-4 overflow-hidden touch-none select-none"
                 onClick={() => setActiveIdx(null)}
               >
-                {/* Close Button */}
-                <button
-                  id="lightbox-close-btn"
-                  className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000000] focus:outline-none cursor-pointer"
-                  onClick={() => setActiveIdx(null)}
-                  aria-label="Close Lightbox"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-
-                {/* Prev Button */}
-                <button
-                  id="lightbox-prev-btn"
-                  className="absolute left-2 sm:left-6 p-2.5 sm:p-3 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000000] focus:outline-none cursor-pointer"
-                  onClick={handlePrev}
-                  aria-label="Previous Image"
-                >
-                  <ChevronLeft className="w-7 h-7 sm:w-8 sm:h-8" />
-                </button>
-
                 {/* Active Image Frame */}
                 <motion.div
                   key={activeIdx}
@@ -133,7 +113,7 @@ export default function Gallery() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="relative max-w-4xl max-h-[85vh] w-full flex flex-col items-center justify-center px-2 z-[1000000]"
+                  className="relative max-w-4xl max-h-[85vh] w-full flex flex-col items-center justify-center px-10 sm:px-16 z-[1000000]"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <img
@@ -149,10 +129,30 @@ export default function Gallery() {
                   </div>
                 </motion.div>
 
+                {/* Close Button */}
+                <button
+                  id="lightbox-close-btn"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000010] focus:outline-none cursor-pointer"
+                  onClick={() => setActiveIdx(null)}
+                  aria-label="Close Lightbox"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+
+                {/* Prev Button */}
+                <button
+                  id="lightbox-prev-btn"
+                  className="absolute left-2 sm:left-6 p-2.5 sm:p-3 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000010] focus:outline-none cursor-pointer"
+                  onClick={handlePrev}
+                  aria-label="Previous Image"
+                >
+                  <ChevronLeft className="w-7 h-7 sm:w-8 sm:h-8" />
+                </button>
+
                 {/* Next Button */}
                 <button
                   id="lightbox-next-btn"
-                  className="absolute right-2 sm:right-6 p-2.5 sm:p-3 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000000] focus:outline-none cursor-pointer"
+                  className="absolute right-2 sm:right-6 p-2.5 sm:p-3 text-white/80 hover:text-white hover:bg-white/20 bg-black/60 border border-white/20 rounded-full transition-colors z-[1000010] focus:outline-none cursor-pointer"
                   onClick={handleNext}
                   aria-label="Next Image"
                 >
